@@ -19,5 +19,10 @@ namespace HyperSloopApp.Data
 
         public DbSet<Events> Events { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            //Move connection string to appsettings
+            optionsBuilder.UseSqlServer("Data Source= (localdb)\\MSSQLLocalDB; Initial Catalog=HyperSloop");
+        }
     }
 }

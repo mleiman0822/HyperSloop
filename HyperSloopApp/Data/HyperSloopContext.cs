@@ -10,5 +10,14 @@ namespace HyperSloopApp.Data
     public class HyperSloopContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+
+        public DbSet<UserCard> UserCar { get; set; }
+
+        public DbSet<Slide> Slides { get; set; }
+
+        public DbSet <Sensors> Sensors { get; set; }
+
+        public DbSet<Events> Events { get; set; }
+
     }
 }

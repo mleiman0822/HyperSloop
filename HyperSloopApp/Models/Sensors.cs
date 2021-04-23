@@ -10,10 +10,12 @@ namespace HyperSloopApp.Models
     {
         [Key]
         public int SensorId { get; set; }
-        public int SlideId { get; set; }
-        public string SensorType { get; set; }
-        public string Region { get; set; }
-
-        public ICollection<Slide> Slides { get; set; }
+        public int EventId { get; set; }
+        public enum Slide 
+        { orange = 1, 
+          green = 2, 
+          blue = 3
+        }
+        public DateTime Time { get; set; }
     }
 }

@@ -10,9 +10,8 @@ namespace HyperSloopApp.Models
     {
         [Key]
         public int EventId { get; set; }
-        public DateTime EventTime { get; set; }
+        
         public int KeyCardId { get; set; }
-        public int SensorId { get; set; }
 
     }
 }

@@ -26,5 +26,7 @@ namespace HyperSloopApp.Data
                 //Move connection string to appsettings
                 optionsBuilder.UseSqlServer(connectionString);         
         }
+
+    
     }
 }

@@ -8,7 +8,6 @@ namespace HyperSloopApp.Models
 {
     public class Events
     {
-        [Key]
         public int EventId { get; set; }
         
         public int KeyCardId { get; set; }

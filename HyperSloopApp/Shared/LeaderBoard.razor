@@ -1,5 +1,25 @@
-﻿<h3>LeaderBoard</h3>
+﻿@page "/leaderBoard"
+@using HyperSloopApp.Models 
+
+<h3 class="text-center">LeaderBoard</h3>
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" 
+        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@user" TItem="User" ColumnWidth="300px" 
+        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+        LogicalFilterOperator="LogicalFilterOperator.Or">
+        <Columns>
+            <RadzenDataGridColumn TItem="User" Property="Name" Filterable="false" Title="ID" Frozen="true" Width="50px" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="User" Property="FirstName" Title="First Name" />            
+        </Columns>
+    </RadzenDataGrid>
+
 
 @code {
 
+    IEnumerable<User> user;
+
+    protected override void OnInitialized()
+        {
+
+        }
 }

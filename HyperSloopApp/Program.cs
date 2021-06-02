@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using HyperSloopApp.Data;
 using HyperSloopApp.Models;
-using HyperSloopApp.Data.Providers;
 
 namespace HyperSloopApp
 {

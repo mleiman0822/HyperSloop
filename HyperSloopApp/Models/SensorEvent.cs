@@ -6,16 +6,12 @@ using System.Threading.Tasks;
 
 namespace HyperSloopApp.Models
 {
-    public class Sensors
+    public class SensorEvent
     {
         [Key]
+        public int SensorEventId { get; set; }
         public int SensorId { get; set; }
-        public int EventId { get; set; }
-        public enum Slide 
-        { orange = 1, 
-          green = 2, 
-          blue = 3
-        }
+        public Sensor Sensor { get; set; }
         public DateTime Time { get; set; }
     }
 }

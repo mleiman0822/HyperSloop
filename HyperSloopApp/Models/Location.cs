@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace HyperSloopApp.Models
 {
-    public class User
-    {
+    public class Location
+    { 
         [Key]
-        public int UserId { get; set; }
+        public int LocationId { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
-        public ICollection<ScanEvent> ScanEvents { get; set; }
-        public ICollection<SlideEvent> SlideEvents { get; set; }
+        public ICollection<Slide> Slides { get; set; }
+
+        //Expandable information
 
     }
 }

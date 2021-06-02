@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Radzen;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace HyperSloopApp
 {
@@ -42,17 +42,24 @@ namespace HyperSloopApp
             services.AddAuthorization(options =>
             {
                 // By default, all incoming requests will be authorized according to the default policy
-                options.FallbackPolicy = options.DefaultPolicy;
+                //options.FallbackPolicy = options.DefaultPolicy;
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
             });
 
             services.AddRazorPages();
             services.AddServerSideBlazor()
                 .AddMicrosoftIdentityConsentHandler();
-            services.AddSingleton<WeatherForecastService>();
             services.AddScoped<DialogService>();
             services.AddScoped<NotificationService>();
             services.AddScoped<TooltipService>();
             services.AddScoped<ContextMenuService>();
+            services.AddScoped<ApplicationDbContext>();
+            var cs = Configuration.GetConnectionString("default");
+            services.AddDbContext<ApplicationDbContext>(item => item.UseMySql(
+               cs, ServerVersion.AutoDetect(cs)));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

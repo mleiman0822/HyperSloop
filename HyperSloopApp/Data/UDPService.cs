@@ -68,6 +68,7 @@ namespace HyperSloopApp.Services
         {
             return Encoding.UTF8.GetString(bytes);
         }
+        
     }
 }
 

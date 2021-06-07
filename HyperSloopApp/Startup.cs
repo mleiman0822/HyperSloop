@@ -56,10 +56,13 @@ namespace HyperSloopApp
             services.AddScoped<TooltipService>();
             services.AddScoped<ContextMenuService>();
             services.AddScoped<ApplicationDbContext>();
+            services.AddScoped<HyperSloopService>();
+            services.AddSingleton<SlideUploadService>();
             var cs = Configuration.GetConnectionString("default");
             services.AddDbContext<ApplicationDbContext>(item => item.UseMySql(
-               cs, ServerVersion.AutoDetect(cs)));
-
+            cs, ServerVersion.AutoDetect(cs)));
+            
+   
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

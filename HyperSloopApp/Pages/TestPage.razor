@@ -16,12 +16,12 @@
 <div>
     @if (slideFloors["start"] == "")
     {
-        <h2>Which Floor Are You Starting From?</h2>
+        <h2>Which Slide Are You Taking?</h2>
         <RadzenDropDown AllowClear="true" TValue="int" Style="width:300px"
                         Data="@(slide.Select(s => s.SlideId).Distinct())"
                         ValueProperty="SlideId"
                         Change="@(args => OnChange(args, "start"))"
-                        @bind-Value="obj.SlideId" />
+                         />
     }
     else
     {
@@ -94,7 +94,7 @@
 }
 else
 {
-    <h2>@result.ToString()</h2>
+    <h2>@result.ToString("mm':'ss':'fff")</h2>
 }
 
 @code {
@@ -105,7 +105,7 @@ else
     public string Email;
     public Dictionary<string, string> slideFloors = new Dictionary<string, string> { { "start", "" }, { "end", "" } };
     public List<Slide> slide = new List<Slide>();
-    SlideEvent obj = new SlideEvent();
+    Events obj = new Events();
 
 
     protected override void OnInitialized()

@@ -1,16 +1,58 @@
 ﻿@page "/personalStats"
 @using Radzen
 @using Radzen.Blazor
-@using System.Net 
-@using System.Net.Sockets 
+@using System.Net
+@using System.Net.Sockets
+@using HyperSloopApp.Models
+@using HyperSloopApp.Data
+@using Microsoft.AspNetCore.Http 
+@inject HyperSloopService hyperSloopService
+@inject IHttpContextAccessor httpContextAccessor
+@inject AppService appservice
 
-  
+
 <h3>Personal Metrics</h3>
+<h2>@Email</h2>
 
+@if (slideEvents == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>How many times youve got down the slide</th>
+                <th>Slide</th>
+                <th>Start Time</th>
+                <th>Duration (In Seconds)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var slideEvent in slideEvents)
+            {
+            <tr>
+                <td>@slideEvent.SlideEventId</td>
+                <td>@slideEvent.StartTime</td>
+                <td>@slideEvent.EndTime</td>
+                <td>@slideEvent.SlideDuration</td>
+            </tr>
+
+            }
+        </tbody>
+    </table>
+}
 
 
 
 @code {
+    public string Email { get; set; }
+    public IEnumerable<SlideEvent> slideEvents { get; set; }
 
-
+    protected override async Task OnInitializedAsync()
+    {
+        Email = httpContextAccessor.HttpContext.User.Identity.Name.ToString();
+        slideEvents = await appservice._HyperSloopService.GetSlideEventsDataByUserId(Email);
+    }
 }

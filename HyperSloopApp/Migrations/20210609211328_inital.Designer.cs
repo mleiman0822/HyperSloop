@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HyperSloopApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210604185412_inital")]
+    [Migration("20210609211328_inital")]
     partial class inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,6 +18,33 @@ namespace HyperSloopApp.Migrations
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.5");
+
+            modelBuilder.Entity("HyperSloopApp.Models.Events", b =>
+                {
+                    b.Property<int>("EventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("EventType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SlideId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EventId");
+
+                    b.HasIndex("SlideId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Events");
+                });
 
             modelBuilder.Entity("HyperSloopApp.Models.Location", b =>
                 {
@@ -30,19 +57,7 @@ namespace HyperSloopApp.Migrations
 
                     b.HasKey("LocationId");
 
-                    b.ToTable("Location");
-
-                    b.HasData(
-                        new
-                        {
-                            LocationId = 1,
-                            Name = "BNG"
-                        },
-                        new
-                        {
-                            LocationId = 2,
-                            Name = "BNG South"
-                        });
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("HyperSloopApp.Models.Slide", b =>
@@ -74,48 +89,26 @@ namespace HyperSloopApp.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("Slides");
-
-                    b.HasData(
-                        new
-                        {
-                            SlideId = 1,
-                            EndingFloor = 1,
-                            HeightInFeet = 50.0,
-                            HexColor = "#0000FF",
-                            LengthInFeet = 50.0,
-                            LocationId = 1,
-                            StartingFloor = 3
-                        },
-                        new
-                        {
-                            SlideId = 2,
-                            EndingFloor = 1,
-                            HeightInFeet = 25.0,
-                            HexColor = "#FF0000",
-                            LengthInFeet = 25.0,
-                            LocationId = 1,
-                            StartingFloor = 2
-                        },
-                        new
-                        {
-                            SlideId = 3,
-                            EndingFloor = 2,
-                            HeightInFeet = 20.0,
-                            HexColor = "#FFFF00",
-                            LengthInFeet = 20.0,
-                            LocationId = 1,
-                            StartingFloor = 3
-                        });
                 });
 
             modelBuilder.Entity("HyperSloopApp.Models.SlideEvent", b =>
                 {
-                    b.Property<int>("SlideEventId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<double>("Duration")
-                        .HasColumnType("double");
+                    b.Property<double>("ScanDuration")
+                        .HasColumnType("double")
+                        .HasColumnName("Scan Duration");
+
+                    b.Property<DateTime>("ScanTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<double>("SlideDuration")
+                        .HasColumnType("double")
+                        .HasColumnName("Slide Duration");
+
+                    b.Property<string>("SlideEventId")
+                        .HasColumnType("longtext");
 
                     b.Property<int>("SlideId")
                         .HasColumnType("int");
@@ -123,49 +116,48 @@ namespace HyperSloopApp.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("UserEmail")
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.HasKey("SlideEventId");
+                    b.HasIndex("SlideId");
 
-                    b.HasIndex("UserEmail");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("SlideEvents");
-
-                    b.HasData(
-                        new
-                        {
-                            SlideEventId = 1,
-                            Duration = 10.0,
-                            SlideId = 1,
-                            StartTime = new DateTime(2021, 6, 4, 13, 54, 12, 131, DateTimeKind.Local).AddTicks(1934),
-                            UserEmail = "matthew.leiman@bngholdingsinc.com"
-                        });
+                    b.ToView("slideevents");
                 });
 
             modelBuilder.Entity("HyperSloopApp.Models.User", b =>
                 {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
-                    b.HasKey("Email");
+                    b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Email = "matthew.leiman@bngholdingsinc.com",
-                            Name = "Matthew Leiman"
-                        },
-                        new
-                        {
-                            Email = "JasonBourne@jb.com",
-                            Name = "Jason Bourne"
-                        });
+            modelBuilder.Entity("HyperSloopApp.Models.Events", b =>
+                {
+                    b.HasOne("HyperSloopApp.Models.Slide", "Slide")
+                        .WithMany()
+                        .HasForeignKey("SlideId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HyperSloopApp.Models.User", "User")
+                        .WithMany("Events")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Slide");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HyperSloopApp.Models.Slide", b =>
@@ -181,9 +173,21 @@ namespace HyperSloopApp.Migrations
 
             modelBuilder.Entity("HyperSloopApp.Models.SlideEvent", b =>
                 {
-                    b.HasOne("HyperSloopApp.Models.User", null)
-                        .WithMany("SlideEvents")
-                        .HasForeignKey("UserEmail");
+                    b.HasOne("HyperSloopApp.Models.Slide", "Slide")
+                        .WithMany()
+                        .HasForeignKey("SlideId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HyperSloopApp.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Slide");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HyperSloopApp.Models.Location", b =>
@@ -193,7 +197,7 @@ namespace HyperSloopApp.Migrations
 
             modelBuilder.Entity("HyperSloopApp.Models.User", b =>
                 {
-                    b.Navigation("SlideEvents");
+                    b.Navigation("Events");
                 });
 #pragma warning restore 612, 618
         }

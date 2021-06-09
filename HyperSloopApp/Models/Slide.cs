@@ -19,8 +19,6 @@ namespace HyperSloopApp.Models
         public int StartingFloor { get; set; }
         public int EndingFloor { get; set; }
 
-
-
         //public int SlideId { get; set; }
         //public string HexColor { get; set; }
         //public double LengthInFeet { get; set; }

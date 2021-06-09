@@ -12,7 +12,7 @@ namespace HyperSloopApp.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Location",
+                name: "Locations",
                 columns: table => new
                 {
                     LocationId = table.Column<int>(type: "int", nullable: false)
@@ -22,7 +22,7 @@ namespace HyperSloopApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Location", x => x.LocationId);
+                    table.PrimaryKey("PK_Locations", x => x.LocationId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -30,14 +30,16 @@ namespace HyperSloopApp.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Email = table.Column<string>(type: "varchar(255)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Email = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Name = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Email);
+                    table.PrimaryKey("PK_Users", x => x.UserId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -59,86 +61,99 @@ namespace HyperSloopApp.Migrations
                 {
                     table.PrimaryKey("PK_Slides", x => x.SlideId);
                     table.ForeignKey(
-                        name: "FK_Slides_Location_LocationId",
+                        name: "FK_Slides_Locations_LocationId",
                         column: x => x.LocationId,
-                        principalTable: "Location",
+                        principalTable: "Locations",
                         principalColumn: "LocationId",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "SlideEvents",
+                name: "Events",
                 columns: table => new
                 {
-                    SlideEventId = table.Column<int>(type: "int", nullable: false)
+                    EventId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserEmail = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DateTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    EventType = table.Column<int>(type: "int", nullable: false),
                     SlideId = table.Column<int>(type: "int", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Duration = table.Column<double>(type: "double", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SlideEvents", x => x.SlideEventId);
+                    table.PrimaryKey("PK_Events", x => x.EventId);
                     table.ForeignKey(
-                        name: "FK_SlideEvents_Users_UserEmail",
-                        column: x => x.UserEmail,
+                        name: "FK_Events_Slides_SlideId",
+                        column: x => x.SlideId,
+                        principalTable: "Slides",
+                        principalColumn: "SlideId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Events_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Email",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.InsertData(
-                table: "Location",
-                columns: new[] { "LocationId", "Name" },
-                values: new object[,]
-                {
-                    { 1, "BNG" },
-                    { 2, "BNG South" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Email", "Name" },
-                values: new object[,]
-                {
-                    { "matthew.leiman@bngholdingsinc.com", "Matthew Leiman" },
-                    { "JasonBourne@jb.com", "Jason Bourne" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SlideEvents",
-                columns: new[] { "SlideEventId", "Duration", "SlideId", "StartTime", "UserEmail" },
-                values: new object[] { 1, 10.0, 1, new DateTime(2021, 6, 4, 13, 54, 12, 131, DateTimeKind.Local).AddTicks(1934), "matthew.leiman@bngholdingsinc.com" });
-
-            migrationBuilder.InsertData(
-                table: "Slides",
-                columns: new[] { "SlideId", "EndingFloor", "HeightInFeet", "HexColor", "LengthInFeet", "LocationId", "StartingFloor" },
-                values: new object[,]
-                {
-                    { 1, 1, 50.0, "#0000FF", 50.0, 1, 3 },
-                    { 2, 1, 25.0, "#FF0000", 25.0, 1, 2 },
-                    { 3, 2, 20.0, "#FFFF00", 20.0, 1, 3 }
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_SlideId",
+                table: "Events",
+                column: "SlideId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SlideEvents_UserEmail",
-                table: "SlideEvents",
-                column: "UserEmail");
+                name: "IX_Events_UserId",
+                table: "Events",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Slides_LocationId",
                 table: "Slides",
                 column: "LocationId");
-        }
 
+            migrationBuilder.Sql(@"CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `hypersloop`.`slideevents` AS
+    SELECT 
+        CONCAT(`userstart`.`EventId`,
+                '_',
+                `slidestart`.`EventId`,
+                '_',
+                `slideend`.`EventId`) AS `SlideEventid`,
+        `userstart`.`UserId` AS `UserId`,
+        `userstart`.`SlideId` AS `SlideId`,
+        `userstart`.`DateTime` AS `ScanTime`,
+        `slidestart`.`DateTime` AS `StartTime`,
+        `slideend`.`DateTime` AS `EndTime`,
+        (TIMESTAMPDIFF(MICROSECOND,
+            `userstart`.`DateTime`,
+            `slidestart`.`DateTime`) / 1000000) AS `Scan Duration`,
+        (TIMESTAMPDIFF(MICROSECOND,
+            `slidestart`.`DateTime`,
+            `slideend`.`DateTime`) / 1000000) AS `Slide Duration`
+    FROM
+        ((`hypersloop`.`events` `userstart`
+        JOIN `hypersloop`.`events` `slidestart` ON (((`userstart`.`SlideId` = `slidestart`.`SlideId`)
+            AND (`slidestart`.`DateTime` > `userstart`.`DateTime`)
+            AND (TIMESTAMPDIFF(SECOND, `userstart`.`DateTime`, `slidestart`.`DateTime`) < 10)
+            AND (`slidestart`.`EventType` = 2)
+            AND (`userstart`.`EventType` = 1))))
+        JOIN `hypersloop`.`events` `slideend` ON (((`slidestart`.`SlideId` = `slideend`.`SlideId`)
+            AND (`slideend`.`DateTime` > `slidestart`.`DateTime`)
+            AND (TIMESTAMPDIFF(SECOND, `slidestart`.`DateTime`, `slideend`.`DateTime`) < 10)
+            AND (`slideend`.`EventType` = 3))))");
+
+        }
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql(@"DROP VIEW IF EXISTS hypersloop.slideevent;
+");
             migrationBuilder.DropTable(
-                name: "SlideEvents");
+                name: "Events");
 
             migrationBuilder.DropTable(
                 name: "Slides");
@@ -147,7 +162,7 @@ namespace HyperSloopApp.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Location");
+                name: "Locations");
         }
     }
 }

@@ -1,22 +1,50 @@
-﻿@*@page "/leaderBoard"
-@using HyperSloopApp.Models 
+﻿@page "/leaderBoard"
+@using HyperSloopApp.Models
+@using HyperSloopApp.Data
+@inject HyperSloopService hyperSloopService
 
 <h3 class="text-center">LeaderBoard</h3>
 
-<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" 
-        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@user" TItem="User" ColumnWidth="300px" 
-        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-        LogicalFilterOperator="LogicalFilterOperator.Or">
-        <Columns>
-            <RadzenDataGridColumn TItem="User" Property="Name" Filterable="false" Title="ID" Frozen="true" Width="50px" TextAlign="TextAlign.Center" />
-            <RadzenDataGridColumn TItem="User" Property="FirstName" Title="First Name" />            
-        </Columns>
-    </RadzenDataGrid>
+@if (EventObj == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Participant</th>
+                <th>Event Number</th>
+                <th>Slide</th>
+                <th>Start Time</th>
+                <th>Duration (In Seconds)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var slideEvent in EventObj)
+            {
+                <tr>
+                    <td>@slideEvent.User.Name</td>
+                    <td>@slideEvent.SlideEventId</td>
+                    <td style="color:@slideEvent.Slide.HexColor">@slideEvent.Slide.SlideId</td>
+                    <td>@slideEvent.StartTime</td>
+                    <td>@slideEvent.SlideDuration</td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+}
 
 
 @code {
 
-    IEnumerable<User> user;
+    IEnumerable<SlideEvent> EventObj;
 
 
-}*@
+    protected override async Task OnInitializedAsync()
+    {
+        EventObj = await Task.Run(() => hyperSloopService.GetAllSlideEventDataAsync());
+    }
+}

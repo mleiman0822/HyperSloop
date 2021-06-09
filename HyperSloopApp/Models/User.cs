@@ -11,9 +11,10 @@ namespace HyperSloopApp.Models
     public class User
     {
         [Key]
+        public int UserId { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
-        public ICollection<SlideEvent> SlideEvents { get; set; }
+        public ICollection<Events> Events { get; set; }
         
 
         //[Key]

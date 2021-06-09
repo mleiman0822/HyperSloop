@@ -47,7 +47,7 @@ namespace HyperSloopApp
                 .RequireAuthenticatedUser()
                 .Build();
             });
-
+            services.AddHttpContextAccessor();
             services.AddRazorPages();
             services.AddServerSideBlazor()
                 .AddMicrosoftIdentityConsentHandler();
@@ -58,11 +58,10 @@ namespace HyperSloopApp
             services.AddScoped<ApplicationDbContext>();
             services.AddScoped<HyperSloopService>();
             services.AddSingleton<SlideUploadService>();
+            services.AddScoped<AppService>();
             var cs = Configuration.GetConnectionString("default");
             services.AddDbContext<ApplicationDbContext>(item => item.UseMySql(
             cs, ServerVersion.AutoDetect(cs)));
-            
-   
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

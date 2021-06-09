@@ -1,26 +1,41 @@
 ﻿using HyperSloopApp.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HyperSloopApp.Data;
+using HyperSloopApp.Models;
+using HyperSloopApp.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace HyperSloopApp.Data
 {
     public class HyperSloopService
     {
-        private readonly ApplicationDbContext _applicationDbContext;
+        //[Inject]
+        //HttpContextAccessor httpContext { get; set; }
+
+        private readonly ApplicationDbContext _applicationDbContext;       
+        public string Email { get; set; }
 
         public HyperSloopService(ApplicationDbContext applicationDbContext)
         {
             _applicationDbContext = applicationDbContext;
-
         }
-       
+        //public HyperSloopService(string email)
+        //{
+        //    if (string.IsNullOrWhiteSpace(email)) throw new Exception("Email must not be blank");
+        //    Email = email;
+        //}
+
+
         //getting the list of users slide event data
-        public async Task<List<SlideEvent>> GetAllSlideEventDataAsync()
+        public async Task<IEnumerable<SlideEvent>> GetAllSlideEventDataAsync()
         {
-            return await _applicationDbContext.SlideEvents.ToListAsync();
+            return await _applicationDbContext.SlideEvents.Include(x => x.User)
+                .Include(x => x.Slide).ToListAsync();
         }
 
         //inserting new slide event data into the database
@@ -31,12 +46,11 @@ namespace HyperSloopApp.Data
             return true;
         }
 
-        //getting list of slideevent data by Id
-        public async Task<SlideEvent> GetSlideEventDataByEmail(string email)
+        //getting list of slide event data by email
+        public async Task<IEnumerable<SlideEvent>> GetSlideEventsDataByUserId(string email)
         {
-            SlideEvent slideEvent = await _applicationDbContext.SlideEvents.FirstOrDefaultAsync
-            (u => u.UserEmail.Equals(email));
-            return slideEvent;
+            var slideEvent =  _applicationDbContext.SlideEvents.Where(x => x.User.Email == email);
+            return slideEvent;         
         }
     
      }

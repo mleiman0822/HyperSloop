@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @using HyperSloopApp.Data;
+@using HyperSloopApp.Shared; 
 @inject AppService appservice
 
 
@@ -9,15 +10,9 @@
         {
             <div class="page">
                 <div class="sidebar">
-                    <NavMenu />
+                    <NavMenu/>
                 </div>
-
                 <div class="main">
-                    <div class="top-row px-4 auth">
-                        <LoginDisplay />
-                        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-                    </div>
-
                     <div class="content px-4">
                         @Body
                     </div>
@@ -30,9 +25,9 @@
             <h1>Sign in is needed to use HyperSloop.</h1>
             //add links to sign in to create account.
         }
+
     </Authorized>
     <NotAuthorized>
-
     </NotAuthorized>
 </AuthorizeView>
 

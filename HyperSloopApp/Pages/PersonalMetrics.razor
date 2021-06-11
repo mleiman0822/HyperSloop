@@ -5,7 +5,7 @@
 @using System.Net.Sockets
 @using HyperSloopApp.Models
 @using HyperSloopApp.Data
-@using Microsoft.AspNetCore.Http 
+@using Microsoft.AspNetCore.Http
 @inject HyperSloopService hyperSloopService
 @inject IHttpContextAccessor httpContextAccessor
 @inject AppService appservice
@@ -14,17 +14,43 @@
 <h3>Personal Metrics</h3>
 <h2>@Email</h2>
 
-@if (slideEvents == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
+
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" 
+                    FilterMode="FilterMode.Advanced" PageSize="15" AllowPaging="true" AllowSorting="true" Data="@slideEvents" TItem="SlideEvent" 
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" 
+                    LogicalFilterOperator="LogicalFilterOperator.Or">
+        <Columns>
+            <RadzenDataGridColumn TItem="SlideEvent" Property="SlideId"  Title="Slide" Width="50px"/>
+            <RadzenDataGridColumn TItem="SlideEvent" Property="StartTime" Title="Day"  Width="100px" />
+            <RadzenDataGridColumn TItem="SlideEvent" Property="StartTime"  Title="Start Time" Width="100px" />
+        </Columns>
+    </RadzenDataGrid>
+
+
+
+    @*<RadzenGrid @ref="slideEventGrid"
+                AllowFiltering="true"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                FilterMode="FilterMode.Advanced"
+                AllowPaging="true"
+                PageSize="25"
+                AllowSorting="true"
+                Data="@slideEvents"
+                TItem="SlideEvent"
+                AllowColumnResize="true">            
+        <Columns>
+            <RadzenGridColumn TItem="SlideEvent" Property="SlideEventId.count" Title="Duration (In Seconds)" Width="200px" Filterable="true">
+                <Template Context="slideEvent">
+                    <div>@slideEvent.SlideDuration</div>
+                </Template>
+            </RadzenGridColumn>
+        </Columns>
+    </RadzenGrid>*@
+    @*<table class="table">
         <thead>
             <tr>
                 <th>How many times youve got down the slide</th>
-                <th>Slide</th>
+                <th>Day</th>
                 <th>Start Time</th>
                 <th>Duration (In Seconds)</th>
             </tr>
@@ -32,16 +58,16 @@ else
         <tbody>
             @foreach (var slideEvent in slideEvents)
             {
-            <tr>
-                <td>@slideEvent.SlideEventId</td>
-                <td>@slideEvent.StartTime</td>
-                <td>@slideEvent.EndTime</td>
-                <td>@slideEvent.SlideDuration</td>
-            </tr>
+                <tr>
+                    <td>@slideEvent.SlideEventId</td>
+                    <td>@slideEvent.StartTime.ToLongTimeString()</td>
+                    <td>@slideEvent.EndTime</td>
+                    <td>@slideEvent.SlideDuration</td>
+                </tr>
 
             }
         </tbody>
-    </table>
+    </table>*@
 }
 
 
@@ -49,6 +75,8 @@ else
 @code {
     public string Email { get; set; }
     public IEnumerable<SlideEvent> slideEvents { get; set; }
+    public RadzenGrid<SlideEvent> slideEventGrid { get; set; }
+    public string StartTime { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

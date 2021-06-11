@@ -10,12 +10,10 @@ namespace HyperSloopApp.Models
     {
         [Key]
         public int SensorId { get; set; }
+        public string ExternalDeviceId { get; set; }
         public int SlideId { get; set; }
         public Slide Slide { get; set; }
-        /// <summary>
-        /// 0% percent is start of slide, 100% is end of the slide. 
-        /// </summary>
-        public double PercentageOfSlide { get; set; }
+        public EventType EventType { get; set; }
 
         //Related Items 1 sensor to many SensorEvents 
         public ICollection<SensorEvent> SensorEvents { get; set; }

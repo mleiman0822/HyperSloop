@@ -12,12 +12,13 @@ namespace HyperSloopApp.Models
         [Key]
         public int EventId { get; set; }
         public DateTime DateTime { get; set; }
-        public EventType EventType { get; set; }
-        public int SlideId { get; set; }
-        public Slide Slide { get; set; }
-        //User Id is only used on User detected event type. 
+        //public EventType EventType { get; set; }
+        //public int SlideId { get; set; }
+        //public Slide Slide { get; set; }
         public int? UserId { get; set; }
         public User User { get; set; }
+        public int SensorId { get; set; }
+        public Sensor Sensor { get; set; }
     }
 
     public enum EventType
@@ -26,6 +27,7 @@ namespace HyperSloopApp.Models
         SlideStart = 2,
         SlideEnd = 3
     }
+
 //    SELECT CONCAT(userstart.eventid, '_', slidestart.eventid, "_", slideend.eventid) as 'SlideEventid',
 //userstart.userid as 'UserId',
 //userstart.slideid as 'SlideId',

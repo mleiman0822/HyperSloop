@@ -32,10 +32,10 @@ namespace HyperSloopApp.Data
 
 
         //getting the list of users slide event data
-        public async Task<IEnumerable<SlideEvent>> GetAllSlideEventDataAsync()
+        public IQueryable<SlideEvent> GetUserSlideEvents()
         {
-            return await _applicationDbContext.SlideEvents.Include(x => x.User)
-                .Include(x => x.Slide).ToListAsync();
+            return _applicationDbContext.SlideEvents.Include(x => x.User)
+                .Include(x => x.Slide).AsQueryable();
         }
 
         //inserting new slide event data into the database
@@ -47,7 +47,7 @@ namespace HyperSloopApp.Data
         }
 
         //getting list of slide event data by email
-        public async Task<IEnumerable<SlideEvent>> GetSlideEventsDataByUserId(string email)
+        public async Task<IQueryable<SlideEvent>> GetSlideEventsDataByUserId(string email)
         {
             var slideEvent =  _applicationDbContext.SlideEvents.Where(x => x.User.Email == email);
             return slideEvent;         

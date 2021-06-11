@@ -62,6 +62,7 @@ namespace HyperSloopApp
             var cs = Configuration.GetConnectionString("default");
             services.AddDbContext<ApplicationDbContext>(item => item.UseMySql(
             cs, ServerVersion.AutoDetect(cs)));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

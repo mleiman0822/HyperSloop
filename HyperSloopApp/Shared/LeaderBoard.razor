@@ -3,6 +3,7 @@
 @using HyperSloopApp.Data
 @using Radzen;
 @using System.Globalization;
+@using Blazorise;
 @inject HyperSloopService hyperSloopService
 
 <h3></h3>
@@ -15,40 +16,54 @@
 else
 {
     <h3 class="text-center">Leaderboard</h3>
-    <h2>Slide 1 Count:@EventsList.Where(x => x.Slide.SlideId == 1).Count()</h2>
-    <h2>Slide 2 Count:@EventsList.Where(x => x.Slide.SlideId == 2).Count() </h2>
-    <h2>Slide 3 Count:@EventsList.Where(x => x.Slide.SlideId == 3).Count()</h2>
-    <h2>Slide Run Total Count: @EventsList.Select(x => x.SlideEventId).Count()</h2>
 
     @foreach (var range in DateRanges)
     {
 
-    <div class="p-1 float-start">
-        <RadzenButton ButtonStyle="@(Range == range ? ButtonStyle.Success : ButtonStyle.Primary)" Click="@(args =>SetRange(range))">
-            @range.ToString()
-        </RadzenButton>
-    </div>
+        <div class="p-1 float-start">
+            <Button Active="true" Color="@(Range == range ? Color.Primary : Color.Dark)"
+                    Clicked="@(args => SetRange(range))">
+                @range.ToString().Replace("_", " ")
+            </Button>
+        </div>
     }
 
+<div class="upper">
 
-<div style="clear:both">
-    <RadzenDataGrid TItem="SlideEvent" Data="@RangedEventList"
-                    AllowColumnResize="true" AllowFiltering="true"
-                    FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    PageSize="20" AllowSorting="true" AllowPaging="true">
-        <Columns>
-            <RadzenDataGridColumn TItem="SlideEvent" Property="User.Name" Title="Participant" Width="100px" />
-            <RadzenDataGridColumn TItem="SlideEvent" Property="Slide.SlideId" Title="Slide" Width="100px" />
-            <RadzenDataGridColumn SortOrder="SortOrder.Descending" TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date" Width="100px" />
-            <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="StartTime" Title="Start Time" Width="100px" />
-            <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time" Width="100px" />
-            <RadzenDataGridColumn TItem="SlideEvent" Property="SlideDuration" Title="Duration (In Seconds)" Width="120px" />
-        </Columns>
-    </RadzenDataGrid>
+    <div>
+        <h6>Slide 1:</h6>
+        <h4 class="text-center">@EventsList.Where(x => x.Slide.SlideId == 1).Count()</h4>
+    </div>
+    <div>
+        <h6>Slide 2:</h6>
+        <h4 class="text-center">@EventsList.Where(x => x.Slide.SlideId == 2).Count()</h4>
+    </div>
+    <div>
+        <h6>Slide 3:</h6>
+        <h4 class="text-center">@EventsList.Where(x => x.Slide.SlideId == 3).Count()</h4>
+    </div>
+    <div>
+        <h6>All:</h6>
+        <h4 class="text-center">@EventsList.Select(x => x.SlideEventId).Count()</h4>
+    </div>
 </div>
+    <div style="clear:both">
+        <RadzenDataGrid TItem="SlideEvent" Data="@RangedEventList"
+                        AllowColumnResize="true" AllowFiltering="true"
+                        FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        PageSize="20" AllowSorting="true" AllowPaging="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="SlideEvent" Property="User.Name" Title="Participant" Width="100px" />
+                <RadzenDataGridColumn TItem="SlideEvent" Property="Slide.SlideId" Title="Slide" Width="100px" />
+                <RadzenDataGridColumn SortOrder="SortOrder.Descending" TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date" Width="100px" />
+                <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="StartTime" Title="Start Time" Width="100px" />
+                <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time" Width="100px" />
+                <RadzenDataGridColumn TItem="SlideEvent" Property="SlideDuration" Title="Duration (In Seconds)" Width="120px" />
+            </Columns>
+        </RadzenDataGrid>
+    </div>
 
 }
-
 
 @code {
 
@@ -98,8 +113,6 @@ else
         Range = range;
         EventsList = hyperSloopService.GetUserSlideEvents().ToList();
         RangedEventList = EventsList.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).ToList();
-        //StateHasChanged();
-
     }
 
 

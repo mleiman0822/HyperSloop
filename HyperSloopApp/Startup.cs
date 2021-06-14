@@ -18,6 +18,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Radzen;
 using Microsoft.EntityFrameworkCore;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 
 namespace HyperSloopApp
 {
@@ -62,6 +65,12 @@ namespace HyperSloopApp
             var cs = Configuration.GetConnectionString("default");
             services.AddDbContext<ApplicationDbContext>(item => item.UseMySql(
             cs, ServerVersion.AutoDetect(cs)));
+            services.AddBlazorise(options =>
+            {
+                options.ChangeTextOnKeyPress = true; // optional
+            })
+            .AddBootstrapProviders().AddFontAwesomeIcons();
+            
 
         }
 

@@ -25,6 +25,23 @@ a, .btn-link {
     color: red;
 }
 
+.upper {
+    display: flex;
+    flex-direction: row;
+    width: 300px;
+    float: inline-end;
+}
+
+
+    .upper > div {
+        flex: 1 1 auto;
+        text-align: center;
+    }
+
+.bestTime {
+    margin-left: -115px;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

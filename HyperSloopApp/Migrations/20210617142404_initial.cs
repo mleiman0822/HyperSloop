@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HyperSloopApp.Migrations
 {
-    public partial class inital : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -146,12 +146,12 @@ VIEW `hypersloop`.`slideevents` AS
             AND (`slideend`.`DateTime` > `slidestart`.`DateTime`)
             AND (TIMESTAMPDIFF(SECOND, `slidestart`.`DateTime`, `slideend`.`DateTime`) < 10)
             AND (`slideend`.`EventType` = 3))))");
-
         }
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@"DROP VIEW IF EXISTS hypersloop.slideevent;
-");
+
+            migrationBuilder.Sql(@"DROP VIEW IF EXISTS hypersloop.slideevent;");
             migrationBuilder.DropTable(
                 name: "Events");
 

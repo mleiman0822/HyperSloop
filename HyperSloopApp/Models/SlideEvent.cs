@@ -25,7 +25,7 @@ namespace HyperSloopApp.Models
         [NotMapped]
         public double? AverageSpeed => Slide?.LengthInFeet / SlideDuration;
         [NotMapped]
-        public double? VertcialSpeed => Slide?.HeightInFeet / SlideDuration;
+        public double? VerticalSpeed => Slide?.HeightInFeet / SlideDuration;
 
         //[Key]
         //public int SlideEventId { get; set; }
@@ -40,6 +40,5 @@ namespace HyperSloopApp.Models
         //public SensorEvent StartingSensorEvent { get; set; }
         //public int EndingSensorEventId { get; set; }
         //public SensorEvent EndingSensorEvent { get; set; }
-
     }
 }

@@ -1,0 +1,57 @@
+﻿@page "/comparedStats/{comparedUser}"
+@using Radzen
+@using Radzen.Blazor
+@using Blazorise
+@using Blazorise.Components
+@using System.Net
+@using System.Net.Sockets
+@using System.Linq.Expressions
+@using HyperSloopApp.Models
+@using HyperSloopApp.Data
+@using Microsoft.AspNetCore.Http
+@using System.Globalization;
+@using System.ComponentModel
+
+@inject HyperSloopService hyperSloopService
+@inject IHttpContextAccessor httpContextAccessor
+@inject AppService appservice
+@inject NavigationManager navigationManager
+
+
+<h3>Showing Stats for <b>@comparedUser</b></h3>
+<RadzenDataGrid TItem="SlideEvent" Data="@EventsListComparedUser"
+                AllowColumnResize="true" AllowFiltering="true"
+                FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                PageSize="20" AllowSorting="true" AllowPaging="true">
+    <Columns>
+        <RadzenDataGridColumn TItem="SlideEvent" Property="User.Name" Title="Participant" Width="100px" />
+        <RadzenDataGridColumn TItem="SlideEvent" Property="SlideId" Title="Slide" Width="75px" />
+        <RadzenDataGridColumn SortOrder="SortOrder.Descending" TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date" Width="75px" />
+        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="StartTime" Title="Start Time" Width="100px" />
+        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time" Width="100px" />
+        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} Sec." Property="SlideDuration" Title="Duration" Width="100px" />
+        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="AverageSpeed" Title="Avg. Speed" Width="85px" />
+        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="VerticalSpeed" Title="Vert. Speed" Width="85px" />
+    </Columns>
+</RadzenDataGrid>
+
+
+@code {
+    [Parameter] public string comparedUser { get; set; }
+    public string Email { get; set; }
+    private Modal modalRef;
+    IEnumerable<SlideEvent> EventsList;
+    IEnumerable<SlideEvent> RangedEventList;
+    IEnumerable<SlideEvent> EventsListCurrentUser;
+    IEnumerable<SlideEvent> EventsListComparedUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Email = httpContextAccessor.HttpContext.User.Identity.Name.ToString();
+        EventsList = hyperSloopService.GetUserSlideEvents().ToList();
+        EventsListCurrentUser = await appservice._HyperSloopService.GetSlideEventsDataByUserId(Email);
+        EventsListComparedUser = await appservice._HyperSloopService.GetComparedUserEventsByName(comparedUser);
+        Email = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Email.ToLower()).ToString().Replace("@Bngholdingsinc.Com", "").Replace(".", " ");
+    }
+
+}

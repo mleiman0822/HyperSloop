@@ -12,13 +12,13 @@ namespace HyperSloopApp.Models
         [Key]
         public int EventId { get; set; }
         public DateTime DateTime { get; set; }
-        //public EventType EventType { get; set; }
-        //public int SlideId { get; set; }
-        //public Slide Slide { get; set; }
+        public EventType EventType { get; set; }
+        public int SlideId { get; set; }
+        public Slide Slide { get; set; }
         public int? UserId { get; set; }
         public User User { get; set; }
-        public int SensorId { get; set; }
-        public Sensor Sensor { get; set; }
+        //public int SensorId { get; set; }
+        //public Sensor Sensor { get; set; }
     }
 
     public enum EventType

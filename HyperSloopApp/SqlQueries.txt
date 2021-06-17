@@ -35,3 +35,5 @@ VIEW `hypersloop`.`slideevent` AS
             AND (TIMESTAMPDIFF(SECOND, `slidestart`.`DateTime`, `slideend`.`DateTime`) < 10)
             AND (`slideend`.`EventType` = 3))))
 
+
+

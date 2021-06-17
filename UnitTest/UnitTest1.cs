@@ -45,7 +45,7 @@ namespace UnitTest1
                 EndingFloor = 1,
                 Location = primaryLocation,
                 HeightInFeet = 30.4,
-                LengthInFeet = 30.4,
+                LengthInFeet = 20.7,
             };
             context.Slides.Add(slideBlue);
 
@@ -83,6 +83,24 @@ namespace UnitTest1
                 Email = "DogCoinRules@gmail.com"
             };
             context.Users.Add(john);
+            var Kenny = new User
+            {
+                Name = "Kenny Coin",
+                Email = "BitCoinRules@gmail.com"
+            };
+            context.Users.Add(Kenny);
+            var Susan = new User
+            {
+                Name = "Susan Taylor",
+                Email = "IdontLikeCrypto@gmail.com"
+            };
+            context.Users.Add(Susan);
+            var Ashley = new User
+            {
+                Name = "Ashley Davidson",
+                Email = "ashvsdevildead@gmail.com"
+            };
+            context.Users.Add(Ashley);
 
             for (int i = 0; i < 20; i++)
             {
@@ -94,7 +112,7 @@ namespace UnitTest1
                     EventType = EventType.UserStart,
                     User = matthew,
                     Slide = slideBlue,
-                    DateTime = userStartTime,          
+                    DateTime = userStartTime                  
                 };
                 var slidestartevent = new Events
                 {
@@ -108,6 +126,68 @@ namespace UnitTest1
                     EventType = EventType.SlideEnd,
                     User = matthew,
                     Slide = slideBlue,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = matthew,
+                    Slide = slideOrange,
+                    DateTime = userStartTime
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = matthew,
+                    Slide = slideOrange,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = matthew,
+                    Slide = slideOrange,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = matthew,
+                    Slide = slideGreen,
+                    DateTime = userStartTime
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = matthew,
+                    Slide = slideGreen,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = matthew,
+                    Slide = slideGreen,
                     DateTime = slideEndTime
                 };
                 context.Events.Add(userStartEvent);
@@ -146,6 +226,347 @@ namespace UnitTest1
                 context.Events.Add(slideendevent);
 
             }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = john,
+                    Slide = slideBlue,
+                    DateTime = userStartTime,
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = john,
+                    Slide = slideBlue,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = john,
+                    Slide = slideBlue,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = john,
+                    Slide = slideGreen,
+                    DateTime = userStartTime,
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = john,
+                    Slide = slideGreen,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = john,
+                    Slide = slideGreen,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = Kenny,
+                    Slide = slideGreen,
+                    DateTime = userStartTime,
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = Kenny,
+                    Slide = slideGreen,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = Kenny,
+                    Slide = slideGreen,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = Kenny,
+                    Slide = slideBlue,
+                    DateTime = userStartTime,
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = Kenny,
+                    Slide = slideBlue,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = Kenny,
+                    Slide = slideBlue,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = Kenny,
+                    Slide = slideOrange,
+                    DateTime = userStartTime,
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = Kenny,
+                    Slide = slideOrange,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = Kenny,
+                    Slide = slideOrange,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = Susan,
+                    Slide = slideOrange,
+                    DateTime = userStartTime,
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = Susan,
+                    Slide = slideOrange,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = Susan,
+                    Slide = slideOrange,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = Susan,
+                    Slide = slideGreen,
+                    DateTime = userStartTime,
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = Susan,
+                    Slide = slideGreen,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = Susan,
+                    Slide = slideGreen,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = Susan,
+                    Slide = slideBlue,
+                    DateTime = userStartTime,
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = Susan,
+                    Slide = slideBlue,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = Susan,
+                    Slide = slideBlue,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = Ashley,
+                    Slide = slideBlue,
+                    DateTime = userStartTime,
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = Ashley,
+                    Slide = slideBlue,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = Ashley,
+                    Slide = slideBlue,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = Ashley,
+                    Slide = slideOrange,
+                    DateTime = userStartTime,
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = Ashley,
+                    Slide = slideOrange,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = Ashley,
+                    Slide = slideOrange,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = Ashley,
+                    Slide = slideGreen,
+                    DateTime = userStartTime,
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = Ashley,
+                    Slide = slideGreen,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = Ashley,
+                    Slide = slideGreen,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
+
+            }
 
 
             //for (int i = 0; i < 20; i++)
@@ -167,10 +588,19 @@ namespace UnitTest1
             //assert
             var slideEvents1 = context.SlideEvents.Where(s => s.UserId == matthew.UserId)
                 .Include(x => x.Slide).ToList();
-            Assert.True(slideEvents1.Count() == 20);
-            var slideEvents2 = context.SlideEvents.Where(s => s.UserId == john.UserId)
-               .Include(x => x.Slide).ToList();
-            Assert.True(slideEvents2.Count() == 20);
+            //Assert.True(slideEvents1.Count() == 60);
+            //var slideEvents2 = context.SlideEvents.Where(s => s.UserId == john.UserId)
+            //   .Include(x => x.Slide).ToList();
+            //Assert.True(slideEvents2.Count() == 60);
+            //var slideEvents3 = context.SlideEvents.Where(s => s.UserId == Kenny.UserId)
+            //    .Include(x => x.Slide).ToList();
+            //Assert.True(slideEvents3.Count() == 60);
+            //var slideEvents4 = context.SlideEvents.Where(s => s.UserId == Susan.UserId)
+            //   .Include(x => x.Slide).ToList();
+            //Assert.True(slideEvents4.Count() == 60);
+            //var slideEvents5 = context.SlideEvents.Where(s => s.UserId == Ashley.UserId)
+            //   .Include(x => x.Slide).ToList();
+            //Assert.True(slideEvents5.Count() == 60);
 
         }
 

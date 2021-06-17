@@ -4,6 +4,7 @@
 @using Radzen;
 @using System.Globalization;
 @using Blazorise;
+@using Blazorise.Components;
 @inject HyperSloopService hyperSloopService
 
 <h3></h3>
@@ -15,11 +16,12 @@
 }
 else
 {
-    <h3 class="text-center">Leaderboard</h3>
+
+    <h3 class="text-center">Global Leaderboard</h3>
+    <br/>
 
     @foreach (var range in DateRanges)
     {
-
         <div class="p-1 float-start">
             <Button Active="true" Color="@(Range == range ? Color.Primary : Color.Dark)"
                     Clicked="@(args => SetRange(range))">
@@ -29,7 +31,18 @@ else
     }
 
 <div class="upper">
-
+    <div>
+        <h6>Avg. Time @Range.ToString().Replace("_", " "):</h6>
+        <h4>@AverageTime.ToString("#.##") Sec.</h4>
+    </div>
+    <div>
+        <h6>Worst Time @Range.ToString().Replace("_", " "):</h6>
+        <h4>@WorstTime.ToString("#.##")  Sec.</h4>
+    </div>
+    <div>
+        <h6>Best Time @Range.ToString().Replace("_", " "):</h6>
+        <h4>@BestTime.ToString("#.##")  Sec.</h4>
+    </div>
     <div>
         <h6>Slide 1:</h6>
         <h4 class="text-center">@EventsList.Where(x => x.Slide.SlideId == 1).Count()</h4>
@@ -47,26 +60,70 @@ else
         <h4 class="text-center">@EventsList.Select(x => x.SlideEventId).Count()</h4>
     </div>
 </div>
-    <div style="clear:both">
-        <RadzenDataGrid TItem="SlideEvent" Data="@RangedEventList"
-                        AllowColumnResize="true" AllowFiltering="true"
-                        FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                        PageSize="20" AllowSorting="true" AllowPaging="true">
-            <Columns>
-                <RadzenDataGridColumn TItem="SlideEvent" Property="User.Name" Title="Participant" Width="100px" />
-                <RadzenDataGridColumn TItem="SlideEvent" Property="Slide.SlideId" Title="Slide" Width="100px" />
-                <RadzenDataGridColumn SortOrder="SortOrder.Descending" TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date" Width="100px" />
-                <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="StartTime" Title="Start Time" Width="100px" />
-                <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time" Width="100px" />
-                <RadzenDataGridColumn TItem="SlideEvent" Property="SlideDuration" Title="Duration (In Seconds)" Width="120px" />
-            </Columns>
-        </RadzenDataGrid>
+<div style="clear:both">
+    <div style="display:flex; padding-bottom:8px">
+        <RadzenDropDown TValue="int" Style="width:100%"
+                        Placeholder="Filter by slide..."
+                        Data="@RangedEventList.Select(x => x.Slide.SlideId).Distinct()"
+                        Change=@(args => OnChange(args))
+                        />        
+        <Button Clicked="@OnResetFilter" Color="Color.Warning">
+            <Icon Name="IconName.ArrowAltCircleDown"></Icon>
+        </Button>
     </div>
+    <RadzenDataGrid TItem="SlideEvent" Data="@RangedEventList"
+                    AllowColumnResize="true" AllowFiltering="true"
+                    FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    PageSize="20" AllowSorting="true" AllowPaging="true">
+        <Columns>
+            <RadzenDataGridColumn TItem="SlideEvent" Property="User.Name" Title="Participant" Width="100px" />
+            <RadzenDataGridColumn TItem="SlideEvent" Property="Slide.SlideId" Title="Slide" Width="100px" />
+            <RadzenDataGridColumn SortOrder="SortOrder.Descending" TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date" Width="100px" />
+            <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="StartTime" Title="Start Time" Width="100px" />
+            <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time" Width="100px" />
+            <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} Sec." Property="SlideDuration" Title="Duration" Width="100px" />
+            <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="AverageSpeed" Title="Avg. Speed" Width="85px" />
+            <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="VerticalSpeed" Title="Vert. Speed" Width="85px" />
+        </Columns>
+    </RadzenDataGrid>
+</div>
 
 }
 
 @code {
-
+    public double AverageTime
+    {
+        get
+        {
+            if (RangedEventList == null || RangedEventList.Count() == 0)
+            {
+                return 0;
+            }
+            return RangedEventList.Average(x => x.SlideDuration);
+        }
+    }
+    public double BestTime
+    {
+        get
+        {
+            if (RangedEventList == null || RangedEventList.Count() == 0)
+            {
+                return 0;
+            }
+            return RangedEventList.Min(x => x.SlideDuration);
+        }
+    }
+    public double WorstTime
+    {
+        get
+        {
+            if (RangedEventList == null || RangedEventList.Count() == 0)
+            {
+                return 0;
+            }
+            return RangedEventList.Max(x => x.SlideDuration);
+        }
+    }
     IEnumerable<SlideEvent> EventsList;
     IEnumerable<SlideEvent> RangedEventList;
     public DateTime StartRange { get; set; } = DateTime.Now.Date;
@@ -115,6 +172,18 @@ else
         RangedEventList = EventsList.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).ToList();
     }
 
+    void OnChange(object args)
+    {
+        RangedEventList = RangedEventList.Where(x => x.Slide.SlideId == Convert.ToInt32(args));
+    }
+
+    void OnResetFilter()
+    {
+        RangedEventList = EventsList.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).ToList();
+        InvokeAsync(StateHasChanged);
+    }
+
+
 
     public enum DateRange
     {
@@ -124,6 +193,5 @@ else
         Year,
         All_Time
     }
-
 
 }

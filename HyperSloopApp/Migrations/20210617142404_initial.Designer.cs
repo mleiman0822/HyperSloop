@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HyperSloopApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210609211328_inital")]
-    partial class inital
+    [Migration("20210617142404_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

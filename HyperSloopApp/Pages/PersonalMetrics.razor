@@ -1,17 +1,21 @@
 ﻿@page "/personalStats"
 @using Radzen
 @using Radzen.Blazor
+@using Blazorise
+@using Blazorise.Components
 @using System.Net
 @using System.Net.Sockets
+@using System.Linq.Expressions
 @using HyperSloopApp.Models
 @using HyperSloopApp.Data
 @using Microsoft.AspNetCore.Http
 @using System.Globalization;
-@using Blazorise.Icons.FontAwesome;
+@using System.ComponentModel
 
 @inject HyperSloopService hyperSloopService
 @inject IHttpContextAccessor httpContextAccessor
 @inject AppService appservice
+@inject NavigationManager navigationManager 
 
 
 <h3></h3>
@@ -24,6 +28,33 @@
 else
 {
     <h3 class="text-center">Personal Metrics for <b>@Email</b></h3>
+    <br />
+    <div class="upper">
+        <div>
+            <h6>Avg. Time @Range.ToString().Replace("_", " "):</h6>
+            <h4>@AverageTime.ToString("#.##")  Sec.</h4>
+        </div>
+        <div>
+            <h6>Worst Time @Range.ToString().Replace("_", " "):</h6>
+            <h4>@WorstTime.ToString("#.##") Sec.</h4>
+        </div>
+        <div class="timeMetrics">
+            <h6>Best Time @Range.ToString().Replace("_", " "):</h6>
+            <h4>@BestTime.ToString("#.##") Sec.</h4>
+        </div>
+        <div>
+            <h6>Slide 1:</h6>
+            <h4 class="text-center">@EventsList.Where(x => x.SlideId == 1).Count()</h4>
+        </div>
+        <div>
+            <h6>Slide 2:</h6>
+            <h4 class="text-center">@EventsList.Where(x => x.SlideId == 2).Count()</h4>
+        </div>
+        <div>
+            <h6>Slide 3:</h6>
+            <h4 class="text-center">@EventsList.Where(x => x.SlideId == 3).Count()</h4>
+        </div>
+    </div>
 
     @foreach (var range in DateRanges)
     {
@@ -35,26 +66,55 @@ else
             </Button>
         </div>
     }
+    <div class="p-1 float-start">
+        <Button Active="true" Color="Color.Danger" Clicked="@ShowModal">
+            <RadzenIcon Style="vertical-align:inherit" Icon="compare_arrows" />
+        </Button>
+    </div>
+        <Modal @ref="modalRef" Closed="@CloseModal">
+            <ModalContent Centered="true">
+                <ModalHeader>
+                    <ModalTitle>Compare Stats</ModalTitle>
+                    <CloseButton />
+                </ModalHeader>
+                <ModalBody>
+                    @if (ComparedUser == null)
+                    {
+                        <RadzenDropDown TValue="string" Style="width: 100%;"
+                                        Placeholder="Select HyperSloop User"
+                                        AllowFiltering="true"
+                                        Data="@EventsList.Select(x => x.User.Name).Distinct()"
+                                        Change="@(args => OnCompareStatsChange(args))"
+                                        Value="@ComparedUser" />
+                    }
+                    else
+                    {
+                        <h3 class="text-center">Comparing stats with <b>@ComparedUser</b></h3>
+                        <h4 class="text-center">Is this correct? Press compare to start, otherwise tap close.</h4>
+                        <br />
+                        <div class="text-center">
+                            <Button Style="justify-content:center; text-align:center" Color="Color.Danger" Clicked="@(args => CompareStats(ComparedUser))">Compare</Button>
+                        </div>
+                 }
+                    
 
-<div class="upper">
-    <div class="bestTime">
-        <h6>Best Time @Range.ToString().Replace("_", " "):</h6>
-        <h4>@BestTime Sec.</h4>
-    </div>
-    <div>
-        <h6>Slide 1:</h6>
-        <h4 class="text-center">@EventsList.Where(x => x.SlideId == 1).Count()</h4>
-    </div>
-    <div>
-        <h6>Slide 2:</h6>
-        <h4 class="text-center">@EventsList.Where(x => x.SlideId == 2).Count()</h4>
-    </div>
-    <div>
-        <h6>Slide 3:</h6>
-        <h4 class="text-center">@EventsList.Where(x => x.SlideId == 3).Count()</h4>
-    </div>
-</div>
+                </ModalBody>
+                <ModalFooter>
+                    <Button Color="Color.Secondary" Clicked="@CloseModal">Close</Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+
     <div style="clear:both; margin-right: 5px">
+        <div style="display:flex; padding-bottom:8px">
+            <RadzenDropDown TValue="int" Style="width:100%"
+                            Placeholder="Filter by slide..."
+                            Data="@RangedEventList.Select(x => x.SlideId).Distinct()"
+                            Change=@(args => OnSlideFilterChange(args)) />
+            <Button Clicked="@OnResetFilter" Color="Color.Warning">
+                <Icon Name="IconName.ArrowAltCircleDown"></Icon>
+            </Button>
+        </div>
         <RadzenDataGrid TItem="SlideEvent" Data="@RangedEventList"
                         AllowColumnResize="true" AllowFiltering="true"
                         FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -64,20 +124,28 @@ else
                 <RadzenDataGridColumn SortOrder="SortOrder.Descending" TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date" Width="75px" />
                 <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="StartTime" Title="Start Time" Width="100px" />
                 <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time" Width="100px" />
-                <RadzenDataGridColumn TItem="SlideEvent" Property="SlideDuration" Title="Duration (In Sec.)" Width="100px" />
-                <RadzenDataGridColumn TItem="SlideEvent" Property="AverageSpeed" Title="Avg. Speed" Width="75px">
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="SlideEvent" Property="VertcialSpeed" Title="Vert. Speed" Width="75px" />
+                <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} Sec." Property="SlideDuration" Title="Duration" Width="100px" />
+                <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="AverageSpeed" Title="Avg. Speed" Width="85px" />
+                <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="VerticalSpeed" Title="Vert. Speed" Width="85px" />
             </Columns>
         </RadzenDataGrid>
     </div>
 
 }
 
-
-
 @code {
     public string Email { get; set; }
+    public double AverageTime
+    {
+        get
+        {
+            if (RangedEventList == null || RangedEventList.Count() == 0)
+            {
+                return 0;
+            }
+            return RangedEventList.Average(x => x.SlideDuration);
+        }
+    }
     public double BestTime
     {
         get
@@ -89,9 +157,24 @@ else
             return RangedEventList.Min(x => x.SlideDuration);
         }
     }
-
+    public double WorstTime
+    {
+        get
+        {
+            if (RangedEventList == null || RangedEventList.Count() == 0)
+            {
+                return 0;
+            }
+            return RangedEventList.Max(x => x.SlideDuration);
+        }
+    }
+    private Modal modalRef;
+    public bool ComparingStats = false;
     IEnumerable<SlideEvent> EventsList;
     IEnumerable<SlideEvent> RangedEventList;
+    IEnumerable<SlideEvent> EventsListCurrentUser;
+    IEnumerable<SlideEvent> EventsListComparedUser;
+    public string ComparedUser { get; set; }
     public DateTime StartRange { get; set; } = DateTime.Now.Date;
     public DateTime EndRange { get; set; } = DateTime.Now.AddDays(1).Date;
     public DateRange Range { get; set; } = DateRange.Today;
@@ -134,10 +217,48 @@ else
             StartRange = DateTime.Now.AddYears(-10);
             EndRange = DateTime.Now.AddDays(1).Date;
         }
+
+
         Email = httpContextAccessor.HttpContext.User.Identity.Name.ToString();
-        EventsList = await appservice._HyperSloopService.GetSlideEventsDataByUserId(Email);
-        RangedEventList = EventsList.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).ToList();
+        EventsList = hyperSloopService.GetUserSlideEvents().ToList();
+        EventsListCurrentUser = await appservice._HyperSloopService.GetSlideEventsDataByUserId(Email);
+        RangedEventList = EventsListCurrentUser.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).ToList();
+        EventsListComparedUser = await appservice._HyperSloopService.GetComparedUserEventsByName(ComparedUser);
         Email = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Email.ToLower()).ToString().Replace("@Bngholdingsinc.Com", "").Replace(".", " ");
+    }
+
+    void OnSlideFilterChange(object args)
+    {
+        RangedEventList = RangedEventList.Where(x => x.SlideId == Convert.ToInt32(args));
+    }
+    void OnCompareStatsChange(object args)
+    {
+        ComparedUser = args.ToString();
+    }
+
+    void OnResetFilter()
+    {
+        RangedEventList = EventsListCurrentUser.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).ToList();
+        InvokeAsync(StateHasChanged);
+    }
+    private void ShowModal()
+    {
+        modalRef.Show();
+    }
+
+    private void CloseModal()
+    {
+        modalRef.Hide();
+        ComparedUser = null;
+        ComparingStats = false;
+    }
+
+    public void CompareStats(string comparedUser)
+    {
+        ComparedUser = comparedUser;
+        ComparingStats = true;
+        navigationManager.NavigateTo($"/comparedStats/{comparedUser}");
+        EventsListComparedUser = EventsList.Where(x => x.User.Name == comparedUser).ToList();
     }
 
     public enum DateRange
@@ -146,6 +267,7 @@ else
         Week,
         Month,
         Year,
-        All_Time
+        All_Time,
+
     }
 }

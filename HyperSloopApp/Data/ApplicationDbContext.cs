@@ -19,10 +19,10 @@ namespace HyperSloopApp.Data
         public DbSet<SlideEvent> SlideEvents { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Events> Events { get; set; }
+        public DbSet<Sensor> Sensors { get; set; }
+        public DbSet<SensorEvent> SensorEvents { get; set; }
 
         //public DbSet<ScanEvent> ScanEvents { get; set; }
-        //public DbSet<Sensor> Sensors { get; set; }
-        //public DbSet<SensorEvent> SensorEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

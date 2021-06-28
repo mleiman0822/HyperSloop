@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Radzen;
 using Microsoft.EntityFrameworkCore;
+using HyperSloopApp.Services;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
@@ -60,8 +61,8 @@ namespace HyperSloopApp
             services.AddScoped<ContextMenuService>();
             services.AddScoped<ApplicationDbContext>();
             services.AddScoped<HyperSloopService>();
-            services.AddSingleton<SlideUploadService>();
             services.AddScoped<AppService>();
+            services.AddSingleton<UDPService>();
             var cs = Configuration.GetConnectionString("default");
             services.AddDbContext<ApplicationDbContext>(item => item.UseMySql(
             cs, ServerVersion.AutoDetect(cs)));
@@ -70,8 +71,7 @@ namespace HyperSloopApp
                 options.ChangeTextOnKeyPress = true; // optional
             })
             .AddBootstrapProviders().AddFontAwesomeIcons();
-            
-
+  
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

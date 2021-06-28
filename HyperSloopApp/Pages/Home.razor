@@ -1,0 +1,107 @@
+﻿@page "/"
+@using Radzen.Blazor
+@using HyperSloopApp.Models
+@using HyperSloopApp.Data
+@using HyperSloopApp.Services
+@using System.Threading
+@using System.Net.Sockets
+@using System.Net
+@using Microsoft.AspNetCore.Http
+@using System.Globalization;
+
+@using System.Text
+@inject IJSRuntime JsRuntime
+@inject DialogService dialogService
+@inject AppService appservice
+@inject ApplicationDbContext appDbcontext
+@inject HyperSloopService hyperSloopService
+@inject UDPService udpService
+@inject IHttpContextAccessor httpContextAccessor
+@inject NavigationManager navigationManager
+
+
+<h3>Test Page</h3>
+
+@if (RecievedMessage == null)
+{
+    <h3>Awaiting message</h3>
+}
+else
+{
+    <h3>@RecievedMessage</h3>
+
+}
+<br />
+<br />
+
+@if (SelectedSlide == 0)
+{
+    <h5 class="text-center">Rider: @Email</h5>
+    <br />
+    <br />
+    <h3 class="text-center">Choose Slide:</h3>
+    <RadzenDropDown TValue="int"
+                    Data="@Slides.Select(x => x.SlideId)"
+                    Change=@(args => OnSlideSelection(args))
+                    Style="width:100%"
+                    Placeholder="Select Slide" />
+}
+else
+{
+    <h3 class="text-center">You have chosen slide @SelectedSlide</h3>
+    <h4 class="text-center">Press <b style="color:green">start</b> to begin. You have 5 seconds to go down the slide before timeout.</h4>
+    <br />
+
+    <div class="container">
+        <button @onclick="@(() => StartHyperSloop())" class="startbutton green text-center">
+            Start
+        </button>
+    </div>
+
+}
+
+
+
+
+
+@code{
+    public string RecievedMessage { get; set; }
+    public string Email { get; set; }
+    public int SelectedSlide { get; set; }
+    IEnumerable<Slide> Slides;
+
+    protected async override void OnInitialized()
+    {
+
+        WaitForSeconds();
+        Email = httpContextAccessor.HttpContext.User.Identity.Name.ToString();
+        Slides = hyperSloopService.GetSlides();
+
+
+    }
+
+    public async Task WaitForSeconds()
+    {
+        RecievedMessage = await udpService.GetNext();
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(100);
+        WaitForSeconds();
+    }
+
+    public int OnSlideSelection(object args)
+    {
+        SelectedSlide = Convert.ToInt32(args);
+        return SelectedSlide;
+    }
+
+    void StartHyperSloop()
+    {
+        hyperSloopService.UserEventInsert(SelectedSlide, Email);
+        navigationManager.NavigateTo("/");
+    }
+
+
+}
+
+
+

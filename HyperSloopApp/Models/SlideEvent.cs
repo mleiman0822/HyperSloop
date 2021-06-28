@@ -7,10 +7,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HyperSloopApp.Models
 {
-    public class SlideEvent 
+    public class SlideEvent
     {
         [Key]
-        public string SlideEventId { get; set; }        
+        public string SlideEventId { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
         public int SlideId { get; set; }
@@ -19,13 +19,15 @@ namespace HyperSloopApp.Models
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         [Column("Scan Duration")]
-        public double ScanDuration {get; set; }
+        public double ScanDuration { get; set; }
         [Column("Slide Duration")]
         public double SlideDuration { get; set; }
         [NotMapped]
         public double? AverageSpeed => Slide?.LengthInFeet / SlideDuration;
         [NotMapped]
         public double? VerticalSpeed => Slide?.HeightInFeet / SlideDuration;
+        [NotMapped]
+        public int Rank { get; set; }
 
         //[Key]
         //public int SlideEventId { get; set; }
@@ -41,4 +43,5 @@ namespace HyperSloopApp.Models
         //public int EndingSensorEventId { get; set; }
         //public SensorEvent EndingSensorEvent { get; set; }
     }
+
 }

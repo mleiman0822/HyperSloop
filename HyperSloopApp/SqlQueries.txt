@@ -1,11 +1,11 @@
-﻿DROP VIEW IF EXISTS hypersloop.slideevent;
+﻿DROP VIEW IF EXISTS hypersloop.slideevents;
 
 
 CREATE 
     ALGORITHM = UNDEFINED 
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
-VIEW `hypersloop`.`slideevent` AS
+VIEW `hypersloop`.`slideevents` AS
     SELECT 
         CONCAT(`userstart`.`EventId`,
                 '_',
@@ -28,7 +28,7 @@ VIEW `hypersloop`.`slideevent` AS
         JOIN `hypersloop`.`events` `slidestart` ON (((`userstart`.`SlideId` = `slidestart`.`SlideId`)
             AND (`slidestart`.`DateTime` > `userstart`.`DateTime`)
             AND (TIMESTAMPDIFF(SECOND, `userstart`.`DateTime`, `slidestart`.`DateTime`) < 10)
-            AND (`slidestart`.`EventType` = 2)
+            AND (`slidestart`.`EventType` = 2)F
             AND (`userstart`.`EventType` = 1))))
         JOIN `hypersloop`.`events` `slideend` ON (((`slidestart`.`SlideId` = `slideend`.`SlideId`)
             AND (`slideend`.`DateTime` > `slidestart`.`DateTime`)
@@ -37,3 +37,17 @@ VIEW `hypersloop`.`slideevent` AS
 
 
 
+SELECT max(se.SlideId),
+max(u.name),
+min(se.`Slide Duration`) 
+FROM hypersloop.slideevents AS SE
+JOIN hypersloop.users AS u ON u.userid = se.UserId
+-- WHERE `SlideId` = 1
+GROUP BY se.SlideId, u.userid 
+ORDER BY  max(se.SlideId), min(se.`Slide Duration`)  
+
+
+SET @position := 0; -- Define a variable
+    SELECT * , (@position := @position + 1) AS `Rank`
+    FROM hypersloop.slideevents
+    ORDER BY `Slide Duration`  

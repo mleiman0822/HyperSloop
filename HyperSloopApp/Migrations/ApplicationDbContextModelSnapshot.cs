@@ -58,6 +58,47 @@ namespace HyperSloopApp.Migrations
                     b.ToTable("Locations");
                 });
 
+            modelBuilder.Entity("HyperSloopApp.Models.Sensor", b =>
+                {
+                    b.Property<int>("SensorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ExternalDeviceId")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("SlideId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SensorId");
+
+                    b.HasIndex("SlideId");
+
+                    b.ToTable("Sensors");
+                });
+
+            modelBuilder.Entity("HyperSloopApp.Models.SensorEvent", b =>
+                {
+                    b.Property<int>("SensorEventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("SensorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("SensorEventId");
+
+                    b.HasIndex("SensorId");
+
+                    b.ToTable("SensorEvents");
+                });
+
             modelBuilder.Entity("HyperSloopApp.Models.Slide", b =>
                 {
                     b.Property<int>("SlideId")
@@ -158,6 +199,28 @@ namespace HyperSloopApp.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HyperSloopApp.Models.Sensor", b =>
+                {
+                    b.HasOne("HyperSloopApp.Models.Slide", "Slide")
+                        .WithMany()
+                        .HasForeignKey("SlideId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Slide");
+                });
+
+            modelBuilder.Entity("HyperSloopApp.Models.SensorEvent", b =>
+                {
+                    b.HasOne("HyperSloopApp.Models.Sensor", "Sensor")
+                        .WithMany("SensorEvents")
+                        .HasForeignKey("SensorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sensor");
+                });
+
             modelBuilder.Entity("HyperSloopApp.Models.Slide", b =>
                 {
                     b.HasOne("HyperSloopApp.Models.Location", "Location")
@@ -191,6 +254,11 @@ namespace HyperSloopApp.Migrations
             modelBuilder.Entity("HyperSloopApp.Models.Location", b =>
                 {
                     b.Navigation("Slides");
+                });
+
+            modelBuilder.Entity("HyperSloopApp.Models.Sensor", b =>
+                {
+                    b.Navigation("SensorEvents");
                 });
 
             modelBuilder.Entity("HyperSloopApp.Models.User", b =>

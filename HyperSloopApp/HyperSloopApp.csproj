@@ -7,11 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="C:\Users\matthew.leiman\.nuget\packages\blazorise\0.9.3.8\contentFiles\any\net5.0\compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazorise" Version="0.9.3.8" />
     <PackageReference Include="Blazorise.Bootstrap" Version="0.9.3.8" />
+    <PackageReference Include="Blazorise.Charts" Version="0.9.3.8" />
+    <PackageReference Include="Blazorise.Charts.Streaming" Version="0.9.3.8" />
     <PackageReference Include="Blazorise.Components" Version="0.9.3.8" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.3.8" />
+    <PackageReference Include="BuildWebCompiler" Version="1.12.394" />
     <PackageReference Include="Dapper" Version="2.0.90" />
+    <PackageReference Include="Delegate.SassBuilder" Version="1.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.4" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />

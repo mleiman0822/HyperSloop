@@ -5,27 +5,37 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using HyperSloopApp.Models;
+using Microsoft.Extensions.DependencyInjection;
+using HyperSloopApp.Data;
 
 namespace HyperSloopApp.Services
 {
     public class UDPService
     {
-        private int receivePort, sendPort;
+        private int receivePort;
         private string serverIP;
-        private IPEndPoint sendEndPoint, receiveEndPoint;
+        private IPEndPoint receiveEndPoint;
+        private IServiceScopeFactory scopeFactory;
 
-
-        public UDPService(string serverIP, int receivePort, int sendPort)
+        [Serializable]
+        private class SensorData
         {
-            this.serverIP = serverIP;
-            this.receivePort = receivePort;
-            this.sendPort = sendPort;
-            this.sendEndPoint = new IPEndPoint(IPAddress.Parse(this.serverIP), this.sendPort);
+            public string Id { get; set; }
+            public string Distance { get; set; }
+        }
+
+        public UDPService(IServiceScopeFactory scopeFactory)
+        {
+            this.scopeFactory = scopeFactory;
+            this.serverIP = "10.0.61.12";
+            this.receivePort = 7321;
             this.receiveEndPoint = new IPEndPoint(IPAddress.Parse(this.serverIP), this.receivePort);
+            this.MessageRecievedEvent += (x) => { MessageRecievedTask.SetResult(x); MessageRecievedTask = new TaskCompletionSource<string>(); };
             this.readerUdpClient();
-            this.senderUdpClient();
         }
 
         void readerUdpClient()
@@ -33,31 +43,29 @@ namespace HyperSloopApp.Services
             new Thread(() =>
             {
                 UdpClient readerClient = new UdpClient(receivePort);
-                //Console.WriteLine("Awaiting data from server...");
                 var remoteEP = new IPEndPoint(IPAddress.Any, 0);
-                byte[] bytesReceived = readerClient.Receive(ref remoteEP);
-                //Console.WriteLine($"Received {bytesReceived.Length} bytes from {remoteEP}");
-                UDPTest.messagesReceived.Add(bytesReceived);
+                while(true)
+                {
+                    byte[] bytesReceived = readerClient.Receive(ref remoteEP);
+                    //To do : Fix memory leak. 
+                    var HandlerCount = MessageRecievedEvent.GetInvocationList().Length;
+                    MessageRecievedEvent.Invoke(fromBytes(bytesReceived));
+                    UploadSensorEvent(fromBytes(bytesReceived));
+                }
             }).Start();
 
         }
 
-        void senderUdpClient()
+        private TaskCompletionSource<string> MessageRecievedTask = new TaskCompletionSource<string>();
+        public async Task<string> GetNext()
         {
-            UdpClient senderClient = new UdpClient();
-            senderClient.Connect(this.sendEndPoint);
-            string sendString = "1:2:3";
-            byte[] bytes = toBytes(sendString);
-            Thread t = new Thread(() =>
-            {
-                while (true)
-                {
-                    senderClient.Send(bytes, bytes.Length);
-                    Thread.Sleep(1000);
-                }
-            });
-            t.Start();
+            return await MessageRecievedTask.Task;
         }
+        
+        public event UDPEventHandler MessageRecievedEvent;
+
+        public delegate void UDPEventHandler(string message);
+
 
         public byte[] toBytes(string text)
         {
@@ -68,7 +76,39 @@ namespace HyperSloopApp.Services
         {
             return Encoding.UTF8.GetString(bytes);
         }
-        
+
+        //inserting sensor event into the database
+        public void UploadSensorEvent(string message)
+        {
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var _applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var deserializedMessage = JsonSerializer.Deserialize<SensorData>(message);
+                var sensor = _applicationDbContext.Sensors.Where(x => x.ExternalDeviceId == deserializedMessage.Id).First();
+                var rand = new Random();
+                _applicationDbContext.SensorEvents.Add(new SensorEvent
+                {
+                    Sensor = sensor,
+                    Time = DateTime.Now
+                });
+                _applicationDbContext.Events.Add(new Events
+                {
+                   DateTime = DateTime.Now,
+                   EventType = sensor.EventType,
+                   SlideId = sensor.SlideId,
+                   Slide = sensor.Slide                  
+                });
+                _applicationDbContext.Events.Add(new Events
+                {
+                    DateTime = DateTime.Now.AddSeconds(rand.Next(5,10)),
+                    EventType = EventType.SlideEnd,
+                    SlideId = 1,
+                    Slide = sensor.Slide
+                });
+                _applicationDbContext.SaveChanges();
+            }
+        }
+       
     }
 }
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Text.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,27 +10,25 @@ using HyperSloopApp.Data;
 using HyperSloopApp.Models;
 using HyperSloopApp.Data;
 using Microsoft.AspNetCore.Http;
+using HyperSloopApp.Services;
 
 namespace HyperSloopApp.Data
 {
     public class HyperSloopService
     {
-        //[Inject]
-        //HttpContextAccessor httpContext { get; set; }
-
-        private readonly ApplicationDbContext _applicationDbContext;       
+        private ApplicationDbContext _applicationDbContext;       
         public string Email { get; set; }
 
-        public HyperSloopService(ApplicationDbContext applicationDbContext)
+        private IServiceProvider services;
+        private DbContextOptions<ApplicationDbContext> dbOptions;
+
+        public HyperSloopService(ApplicationDbContext applicationDbContext, UDPService udpService, IServiceProvider services, DbContextOptions<ApplicationDbContext> dbOptions)
         {
+            this.services = services;
+            this.dbOptions = dbOptions;
             _applicationDbContext = applicationDbContext;
         }
-        //public HyperSloopService(string email)
-        //{
-        //    if (string.IsNullOrWhiteSpace(email)) throw new Exception("Email must not be blank");
-        //    Email = email;
-        //}
-
+  
         //getting the list of users slide event data
         public IQueryable<SlideEvent> GetUserSlideEvents()
         {
@@ -37,12 +36,9 @@ namespace HyperSloopApp.Data
                 .Include(x => x.Slide).ToList().AsQueryable();
         }
 
-        //inserting new slide event data into the database
-        public async Task<bool> InsertSlideEventData(SlideEvent slideEvent)
+        public IQueryable<Slide> GetSlides()
         {
-            await _applicationDbContext.SlideEvents.AddAsync(slideEvent);
-            await _applicationDbContext.SaveChangesAsync();
-            return true;
+            return _applicationDbContext.Slides;
         }
 
         //getting list of slide event data by email
@@ -57,6 +53,23 @@ namespace HyperSloopApp.Data
         {
             var slideEvent = _applicationDbContext.SlideEvents.Where(x => x.User.Name == name).Include(x => x.Slide).Include(x => x.User).AsQueryable();
             return slideEvent;
+        }
+
+        public void UserEventInsert(int slideid, string email)
+        {
+
+                var user = _applicationDbContext.Users.Where(x => x.Email == email).First();
+                _applicationDbContext.Events.Add(new Events
+                {
+                    DateTime = DateTime.Now,
+                    EventType = EventType.UserStart,
+                    User = user,
+                    UserId = user.UserId,
+                    SlideId = slideid,
+                    Slide = _applicationDbContext.Slides.Where(x => x.SlideId == slideid).First()
+                });
+            
+            _applicationDbContext.SaveChanges();
         }
 
     }

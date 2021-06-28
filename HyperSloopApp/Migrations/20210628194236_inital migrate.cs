@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HyperSloopApp.Migrations
 {
-    public partial class initial : Migration
+    public partial class initalmigrate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -98,6 +98,50 @@ namespace HyperSloopApp.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "Sensors",
+                columns: table => new
+                {
+                    SensorId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ExternalDeviceId = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SlideId = table.Column<int>(type: "int", nullable: false),
+                    EventType = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sensors", x => x.SensorId);
+                    table.ForeignKey(
+                        name: "FK_Sensors_Slides_SlideId",
+                        column: x => x.SlideId,
+                        principalTable: "Slides",
+                        principalColumn: "SlideId",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "SensorEvents",
+                columns: table => new
+                {
+                    SensorEventId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    SensorId = table.Column<int>(type: "int", nullable: false),
+                    Time = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SensorEvents", x => x.SensorEventId);
+                    table.ForeignKey(
+                        name: "FK_SensorEvents_Sensors_SensorId",
+                        column: x => x.SensorId,
+                        principalTable: "Sensors",
+                        principalColumn: "SensorId",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Events_SlideId",
                 table: "Events",
@@ -107,6 +151,16 @@ namespace HyperSloopApp.Migrations
                 name: "IX_Events_UserId",
                 table: "Events",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SensorEvents_SensorId",
+                table: "SensorEvents",
+                column: "SensorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sensors_SlideId",
+                table: "Sensors",
+                column: "SlideId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Slides_LocationId",
@@ -144,22 +198,28 @@ VIEW `hypersloop`.`slideevents` AS
             AND (`userstart`.`EventType` = 1))))
         JOIN `hypersloop`.`events` `slideend` ON (((`slidestart`.`SlideId` = `slideend`.`SlideId`)
             AND (`slideend`.`DateTime` > `slidestart`.`DateTime`)
-            AND (TIMESTAMPDIFF(SECOND, `slidestart`.`DateTime`, `slideend`.`DateTime`) < 10)
+            AND (TIMESTAMPDIFF(SECOND, `slidestart`.`DateTime`, `slideend`.`DateTime`) < 60)
             AND (`slideend`.`EventType` = 3))))");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            //migrationBuilder.Sql(@"DROP VIEW IF EXISTS hypersloop.slideevents;");
 
-            migrationBuilder.Sql(@"DROP VIEW IF EXISTS hypersloop.slideevent;");
             migrationBuilder.DropTable(
                 name: "Events");
 
             migrationBuilder.DropTable(
-                name: "Slides");
+                name: "SensorEvents");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Sensors");
+
+            migrationBuilder.DropTable(
+                name: "Slides");
 
             migrationBuilder.DropTable(
                 name: "Locations");

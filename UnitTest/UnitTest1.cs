@@ -40,7 +40,7 @@ namespace UnitTest1
 
             var slideBlue = new Slide
             {
-                HexColor = HexConverter(System.Drawing.Color.Blue),
+                HexColor = "#2F66AE",
                 StartingFloor = 3,
                 EndingFloor = 1,
                 Location = primaryLocation,
@@ -51,7 +51,7 @@ namespace UnitTest1
 
             var slideGreen = new Slide
             {
-                HexColor = HexConverter(System.Drawing.Color.Green),
+                HexColor = "#54C256",
                 StartingFloor = 3,
                 EndingFloor = 2,
                 Location = primaryLocation,
@@ -62,7 +62,7 @@ namespace UnitTest1
 
             var slideOrange = new Slide
             {
-                HexColor = HexConverter(System.Drawing.Color.Orange),
+                HexColor = "#FC770E",
                 StartingFloor = 2,
                 EndingFloor = 1,
                 Location = primaryLocation,
@@ -101,6 +101,8 @@ namespace UnitTest1
                 Email = "ashvsdevildead@gmail.com"
             };
             context.Users.Add(Ashley);
+
+
 
             //AddEventData(matthew, slideOrange);
             //AddEventData(matthew, slideBlue);

@@ -95,9 +95,10 @@ else
                             }
                             else
                             {
-                                <RadzenDropDown TValue="int" Style="width:100%"
+                                <RadzenDropDown TValue="Slide" Style="width:100%"
                                                 Placeholder="Filter by slide..."
-                                                Data="@RangedEventList.Select(x => x.SlideId).Distinct()"
+                                                Data="@RangedEventListFiltered.Select(x => x.Slide).Distinct()"  
+                                                TextProperty="Name"
                                                 Change=@(args => OnSlideFilterChange(args)) />
                             }
 
@@ -124,7 +125,16 @@ else
                     <RadzenCard>
                         <div class="row">
                             <h2 class="text-center">@Range.ToString().Replace("_", " ")</h2>
-                            <h3>Slide @FilteredSlideId</h3>
+                            @if (FilteredSlideId == 0)
+                            {
+                                <h3 class="text-center">Metrics for all slides</h3>
+
+                            }
+                        else
+                        {
+                            <h3 class="text-center">Metrics for the @FilteredSlideId.ToString().Replace("1", "Blue").Replace("2", "Green").Replace("3", "Orange") slide</h3>
+
+                        }
                             @if (ResetFilter == true)
                             {
                                 <Button Clicked="@OnResetFilter" Color="Color.Warning">
@@ -134,10 +144,10 @@ else
                             }
                             else
                             {
-                                <RadzenDropDown TValue="int" Style="width:100%"
+                                <RadzenDropDown TValue="Slide" Style="width:100%"
                                                 Placeholder="All"
-                                                Data="@RangedEventList.Select(x => x.SlideId).Distinct()"
-                                                TextProperty="SlideName" ValueProperty="SlideId"
+                                                Data="@RangedEventListFiltered.Select(x => x.Slide).Distinct()"
+                                                TextProperty="Name"
                                                 Change=@(args => OnSlideFilterChange(args)) />
                             }
                         </div>
@@ -271,6 +281,7 @@ else
     private Modal modalRef;
     IEnumerable<SlideEvent> EventsList;
     IEnumerable<SlideEvent> RangedEventList;
+    IEnumerable<SlideEvent> RangedEventListFiltered;
     IEnumerable<SlideEvent> EventsListCurrentUser;
     IEnumerable<SlideEvent> EventsListComparedUser;
     public string ComparedUser { get; set; }
@@ -335,20 +346,27 @@ else
             DurationRank = RangedEventList.Where(x => x.SlideId == FilteredSlideId).ToList().Select(x => x.Rank).Min();
 
         }
+        RangedEventListFiltered = RangedEventList;
         EventsListComparedUser = await appservice._HyperSloopService.GetComparedUserEventsByName(ComparedUser);
         Email = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Email.ToLower()).ToString().Replace("@Bngholdingsinc.Com", "").Replace(".", " ");
-        //EventsListCurrentUser.ToList().ForEach(x => { x.Rank = i; i++; });
-        //i = 1;
-        //EventsList.ToList().ForEach(x => { x.Rank = i; i++; });
-        //i = 1;
+
 
     }
 
     public int OnSlideFilterChange(object args)
     {
-        RangedEventList = RangedEventList.Where(x => x.SlideId == Convert.ToInt32(args));
+        var currentSlideId = (args as Slide).SlideId;
+        if (args == null)
+        {
+            RangedEventListFiltered = RangedEventList.ToList();
+        }
+        else
+        {
+            RangedEventListFiltered = RangedEventList.Where(x => x.SlideId == currentSlideId);
+
+        }
         ResetFilter = true;
-        FilteredSlideId = Convert.ToInt32(args);
+        FilteredSlideId = currentSlideId;
         return FilteredSlideId;
     }
     void OnCompareStatsChange(object args)

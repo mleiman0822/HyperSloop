@@ -8,6 +8,9 @@
 @using System.Net
 @using Microsoft.AspNetCore.Http
 @using System.Globalization;
+@using Blazorise;
+@using System;
+@using Microsoft.Extensions.Logging;
 
 @using System.Text
 @inject IJSRuntime JsRuntime
@@ -18,9 +21,10 @@
 @inject UDPService udpService
 @inject IHttpContextAccessor httpContextAccessor
 @inject NavigationManager navigationManager
+@inject IJSRuntime _jsRuntime
 
 
-<h3>Test Page</h3>
+@*<h3>Test Page</h3>
 
 @if (RecievedMessage == null)
 {
@@ -32,39 +36,47 @@ else
 
 }
 <br />
-<br />
+<br />*@
 
-@if (SelectedSlide == 0)
-{
-    <h5 class="text-center">Rider: @Email</h5>
-    <br />
-    <br />
-    <h3 class="text-center">Choose Slide:</h3>
-    <RadzenDropDown TValue="int"
-                    Data="@Slides.Select(x => x.SlideId)"
-                    Change=@(args => OnSlideSelection(args))
-                    Style="width:100%"
-                    Placeholder="Select Slide" />
-}
-else
-{
-    <h3 class="text-center">You have chosen slide @SelectedSlide</h3>
-    <h4 class="text-center">Press <b style="color:green">start</b> to begin. You have 5 seconds to go down the slide before timeout.</h4>
-    <br />
 
-    <div class="container">
-        <button @onclick="@(() => StartHyperSloop())" class="startbutton green text-center">
-            Start
-        </button>
-    </div>
+    <h3 class="text-center"><b>Rider:</b> @Email</h3>
+    <br />
+    <h3 class="text-center">Select Slide:</h3>
+    @foreach(var slide in Slides)
+                {      
+<div class="text-center">
+    <button @onclick="@(() => StartHyperSloop(slide.SlideId))" class="slideButton" style="background-color:@slide.HexColor; color:white; text-align:center"
+            value="@slide.SlideId">
+        @slide.SlideId.ToString().Replace("1", "Blue").Replace("2", "Green").Replace("3", "Orange")
+    </button>
+</div>
+                
 
 }
 
+<Modal @ref="modalRef" Closed="@CancelTimer">
+    <ModalContent Centered="true">
+        <ModalHeader>
+            <ModalTitle>HyperSloop Engaged on slide @SelectedSlide.ToString().Replace("1", "Blue").Replace("2", "Green").Replace("3", "Orange")</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <h1 class="text-center">@counter.ToString().Replace("6","Ready?").Replace("1","Go!")</h1>
+        </ModalBody>
+        <ModalFooter>
+                <Button Color="Color.Danger" Clicked="@CancelTimer">Cancel</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
 
+<audio id="beep" src="./5 second countdown with sound effect.wav"></audio>
 
 
 
 @code{
+    private Modal modalRef;
+    private static System.Timers.Timer timer;
+    private int counter = 6;
     public string RecievedMessage { get; set; }
     public string Email { get; set; }
     public int SelectedSlide { get; set; }
@@ -72,12 +84,9 @@ else
 
     protected async override void OnInitialized()
     {
-
         WaitForSeconds();
         Email = httpContextAccessor.HttpContext.User.Identity.Name.ToString();
         Slides = hyperSloopService.GetSlides();
-
-
     }
 
     public async Task WaitForSeconds()
@@ -88,18 +97,50 @@ else
         WaitForSeconds();
     }
 
-    public int OnSlideSelection(object args)
+
+    void StartHyperSloop(int slideid)
     {
-        SelectedSlide = Convert.ToInt32(args);
-        return SelectedSlide;
+        SelectedSlide = slideid;
+        PlaySound();
+        timer = new System.Timers.Timer(1000);
+        timer.Elapsed += CountDownTimer;
+        timer.Enabled = true;
+        modalRef.Show();
     }
 
-    void StartHyperSloop()
+    public void CountDownTimer(Object source, System.Timers.ElapsedEventArgs e)
     {
-        hyperSloopService.UserEventInsert(SelectedSlide, Email);
-        navigationManager.NavigateTo("/");
+        if(counter > 0)
+        {
+            counter -= 1;
+        }
+        else
+        {
+            timer.Enabled = false;
+        }
+        InvokeAsync(StateHasChanged);
+        if(counter == 0)
+        {
+            hyperSloopService.UserEventInsert(SelectedSlide, Email);
+            timer.Elapsed -= CountDownTimer;
+            navigationManager.NavigateTo("/personalStats", true);
+        }
+    }
+    public void CancelTimer()
+    {
+        timer.Enabled = false;
+        navigationManager.NavigateTo("/", true);
+    }
+    void CancelSlideSelection()
+    {
+        navigationManager.NavigateTo("/", true);
+
     }
 
+    public async Task PlaySound()
+    {
+        await _jsRuntime.InvokeAsync<string>("PlayAudio", "beep");
+    }
 
 }
 

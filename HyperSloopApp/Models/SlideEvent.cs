@@ -29,6 +29,9 @@ namespace HyperSloopApp.Models
         [NotMapped]
         public int Rank { get; set; }
 
+        [NotMapped]
+        public string SlideName => Slide?.Name;
+        
         //[Key]
         //public int SlideEventId { get; set; }
         //public int SlideId { get; set; }

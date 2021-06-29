@@ -98,13 +98,6 @@ namespace HyperSloopApp.Services
                    SlideId = sensor.SlideId,
                    Slide = sensor.Slide                  
                 });
-                _applicationDbContext.Events.Add(new Events
-                {
-                    DateTime = DateTime.Now.AddSeconds(rand.Next(5,10)),
-                    EventType = EventType.SlideEnd,
-                    SlideId = 1,
-                    Slide = sensor.Slide
-                });
                 _applicationDbContext.SaveChanges();
             }
         }

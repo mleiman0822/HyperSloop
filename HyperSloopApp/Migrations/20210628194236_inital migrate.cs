@@ -198,7 +198,7 @@ VIEW `hypersloop`.`slideevents` AS
             AND (`userstart`.`EventType` = 1))))
         JOIN `hypersloop`.`events` `slideend` ON (((`slidestart`.`SlideId` = `slideend`.`SlideId`)
             AND (`slideend`.`DateTime` > `slidestart`.`DateTime`)
-            AND (TIMESTAMPDIFF(SECOND, `slidestart`.`DateTime`, `slideend`.`DateTime`) < 60)
+            AND (TIMESTAMPDIFF(SECOND, `slidestart`.`DateTime`, `slideend`.`DateTime`) < 10)
             AND (`slideend`.`EventType` = 3))))");
         }
 

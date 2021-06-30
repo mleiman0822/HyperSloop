@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HyperSloopApp.Migrations
 {
-    public partial class initalmigrate : Migration
+    public partial class inital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -55,7 +55,9 @@ namespace HyperSloopApp.Migrations
                     LengthInFeet = table.Column<double>(type: "double", nullable: false),
                     HeightInFeet = table.Column<double>(type: "double", nullable: false),
                     StartingFloor = table.Column<int>(type: "int", nullable: false),
-                    EndingFloor = table.Column<int>(type: "int", nullable: false)
+                    EndingFloor = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -166,13 +168,12 @@ namespace HyperSloopApp.Migrations
                 name: "IX_Slides_LocationId",
                 table: "Slides",
                 column: "LocationId");
-
-            migrationBuilder.Sql(@"CREATE 
-    ALGORITHM = UNDEFINED 
+            migrationBuilder.Sql(@"CREATE
+    ALGORITHM = UNDEFINED
     DEFINER = `root`@`localhost` 
     SQL SECURITY DEFINER
 VIEW `hypersloop`.`slideevents` AS
-    SELECT 
+    SELECT
         CONCAT(`userstart`.`EventId`,
                 '_',
                 `slidestart`.`EventId`,
@@ -191,21 +192,19 @@ VIEW `hypersloop`.`slideevents` AS
             `slideend`.`DateTime`) / 1000000) AS `Slide Duration`
     FROM
         ((`hypersloop`.`events` `userstart`
-        JOIN `hypersloop`.`events` `slidestart` ON (((`userstart`.`SlideId` = `slidestart`.`SlideId`)
-            AND (`slidestart`.`DateTime` > `userstart`.`DateTime`)
-            AND (TIMESTAMPDIFF(SECOND, `userstart`.`DateTime`, `slidestart`.`DateTime`) < 10)
-            AND (`slidestart`.`EventType` = 2)
-            AND (`userstart`.`EventType` = 1))))
-        JOIN `hypersloop`.`events` `slideend` ON (((`slidestart`.`SlideId` = `slideend`.`SlideId`)
-            AND (`slideend`.`DateTime` > `slidestart`.`DateTime`)
-            AND (TIMESTAMPDIFF(SECOND, `slidestart`.`DateTime`, `slideend`.`DateTime`) < 10)
-            AND (`slideend`.`EventType` = 3))))");
+        JOIN `hypersloop`.`events` `slidestart` ON(((`userstart`.`SlideId` = `slidestart`.`SlideId`)
+            AND(`slidestart`.`DateTime` > `userstart`.`DateTime`)
+            AND(TIMESTAMPDIFF(SECOND, `userstart`.`DateTime`, `slidestart`.`DateTime`) < 10)
+            AND(`slidestart`.`EventType` = 2)
+            AND(`userstart`.`EventType` = 1))))
+        JOIN `hypersloop`.`events` `slideend` ON(((`slidestart`.`SlideId` = `slideend`.`SlideId`)
+            AND(`slideend`.`DateTime` > `slidestart`.`DateTime`)
+            AND(TIMESTAMPDIFF(SECOND, `slidestart`.`DateTime`, `slideend`.`DateTime`) < 10)
+            AND(`slideend`.`EventType` = 3))))");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            //migrationBuilder.Sql(@"DROP VIEW IF EXISTS hypersloop.slideevents;");
-
             migrationBuilder.DropTable(
                 name: "Events");
 

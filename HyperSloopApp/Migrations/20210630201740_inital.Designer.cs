@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HyperSloopApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210628194236_inital migrate")]
-    partial class initalmigrate
+    [Migration("20210630201740_inital")]
+    partial class inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -121,6 +121,9 @@ namespace HyperSloopApp.Migrations
 
                     b.Property<int>("LocationId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
 
                     b.Property<int>("StartingFloor")
                         .HasColumnType("int");

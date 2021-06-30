@@ -22,13 +22,13 @@
                 <h3 class="text-center">Total Slide Runs</h3>
                 <RadzenChart>
                     <RadzenLegend Position="LegendPosition.Bottom"/>
-                    <RadzenLineSeries Smooth="@smooth" Data="@Slide1" CategoryProperty="Date" Title="Slide 1" LineType="LineType.Dashed" ValueProperty="Value">
+                    <RadzenLineSeries Smooth="@smooth" Data="@Slide1" CategoryProperty="Date" Title="Blue" LineType="LineType.Dashed" ValueProperty="Value">
                         <RadzenMarkers MarkerType="MarkerType.Square" />
                     </RadzenLineSeries>
-                    <RadzenLineSeries Smooth="@smooth" Data="@Slide2" CategoryProperty="Date" Title="Slide 2" LineType="LineType.Solid" ValueProperty="Value">
+                    <RadzenLineSeries Smooth="@smooth" Data="@Slide2" CategoryProperty="Date" Title="Green" LineType="LineType.Solid" ValueProperty="Value">
                         <RadzenMarkers MarkerType="MarkerType.Circle" />
                     </RadzenLineSeries>
-                    <RadzenLineSeries Smooth="@smooth" Data="@Slide3" CategoryProperty="Date" Title="Slide 3" LineType="LineType.Dotted" ValueProperty="Value">
+                    <RadzenLineSeries Smooth="@smooth" Data="@Slide3" CategoryProperty="Date" Title="Orange" LineType="LineType.Dotted" ValueProperty="Value">
                         <RadzenMarkers MarkerType="MarkerType.Triangle" />
                     </RadzenLineSeries>
                     <RadzenCategoryAxis Padding="30" FormatString="{0:MM/dd}"  />
@@ -43,18 +43,17 @@
                 <div class="col-md-6 col-sm-12 p-4">
                     <h3 class="text-center">Average Slide Duraction (Seconds)</h3>
                     <RadzenChart>
-                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide1Average" CategoryProperty="Date" Title="Slide 1" ValueProperty="Average">
+                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide1Average" CategoryProperty="Date" Title="Blue" ValueProperty="Average">
                         </RadzenAreaSeries>
-                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide2Average" CategoryProperty="Date" Title="Slide 2" LineType="LineType.Dashed" ValueProperty="Average">
+                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide2Average" CategoryProperty="Date" Title="Green" LineType="LineType.Dashed" ValueProperty="Average">
                         </RadzenAreaSeries>
-                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide3Average" CategoryProperty="Date" Title="Slide 3" LineType="LineType.Dotted" ValueProperty="Average">
+                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide3Average" CategoryProperty="Date" Title="Orange" LineType="LineType.Dotted" ValueProperty="Average">
                         </RadzenAreaSeries>
                         <RadzenCategoryAxis Padding="20" FormatString="{0:MM/dd}" />
                         <RadzenValueAxis FormatString="{0:0.00}">
                             <RadzenGridLines Visible="true" />
                         </RadzenValueAxis>
                         <RadzenLegend Position="LegendPosition.Bottom" />
-
                     </RadzenChart>
                 </div>
             </div>
@@ -63,20 +62,20 @@
             <div class="row">
                 <div class="col-md-6 col-sm-12 p-4">
                     <h3 class="text-center">Average Vertical Speed (Seconds)</h3>
-                    @*<RadzenChart>
-                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide1VerticalAverage.ToList()" CategoryProperty="Date" Title="Slide 1" ValueProperty="Average">
+                    <RadzenChart>
+                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide1VerticalAverage" CategoryProperty="Date" Title="Slide 1" ValueProperty="Average">
                         </RadzenAreaSeries>
-                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide2Average" CategoryProperty="Date" Title="Slide 2" LineType="LineType.Dashed" ValueProperty="Average">
+                        @*<RadzenAreaSeries Smooth="@smooth" Data="@Slide2VerticalAverage" CategoryProperty="Date" Title="Slide 2" LineType="LineType.Dashed" ValueProperty="Average">
                         </RadzenAreaSeries>
-                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide3Average" CategoryProperty="Date" Title="Slide 3" LineType="LineType.Dotted" ValueProperty="Average">
-                        </RadzenAreaSeries>
+                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide3VerticalAverage" CategoryProperty="Date" Title="Slide 3" LineType="LineType.Dotted" ValueProperty="Average">
+                        </RadzenAreaSeries>*@
                         <RadzenCategoryAxis Padding="20" />
                         <RadzenValueAxis FormatString="{0:0.00}">
                             <RadzenGridLines Visible="true" />
                         </RadzenValueAxis>
                         <RadzenLegend Position="LegendPosition.Bottom" />
 
-                    </RadzenChart>*@
+                    </RadzenChart>
                 </div>
             </div>
         </TabPanel>
@@ -105,6 +104,8 @@
     IEnumerable<DataItemSlideCount> Slide2;
     IEnumerable<DataItemSlideCount> Slide3;
     IEnumerable<DataItemVerticalAverage> Slide1VerticalAverage;
+    IEnumerable<DataItemVerticalAverage> Slide2VerticalAverage;
+    IEnumerable<DataItemVerticalAverage> Slide3VerticalAverage;
     IEnumerable<DataItemAverage> Slide1Average;
     IEnumerable<DataItemAverage> Slide2Average;
     IEnumerable<DataItemAverage> Slide3Average;
@@ -158,10 +159,13 @@
         Slide1 = RangedEventList.Where(x => x.SlideId == 1).GroupBy(x => x.StartTime.Date).Select(x => new DataItemSlideCount(x.Key, x.Count())).ToList();
         Slide2 = RangedEventList.Where(x => x.SlideId == 2).GroupBy(x => x.StartTime.Date).Select(x => new DataItemSlideCount(x.Key, x.Count())).ToList();
         Slide3 = RangedEventList.Where(x => x.SlideId == 3).GroupBy(x => x.StartTime.Date).Select(x => new DataItemSlideCount(x.Key, x.Count())).ToList();
-        Slide1Average = RangedEventList.Where(x => x.SlideId == 1).GroupBy(x => x.StartTime.Date).Select(x => new DataItemAverage(x.Key, x.Average(x => x.SlideDuration))).ToList();
-        Slide2Average = RangedEventList.Where(x => x.SlideId == 2).GroupBy(x => x.StartTime.Date).Select(x => new DataItemAverage(x.Key, x.Average(x => x.SlideDuration))).ToList();
-        Slide3Average = RangedEventList.Where(x => x.SlideId == 3).GroupBy(x => x.StartTime.Date).Select(x => new DataItemAverage(x.Key, x.Average(x => x.SlideDuration))).ToList();
-        //Slide1VerticalAverage = RangedEventList.Where(x => x.SlideId == 1).GroupBy(x => x.StartTime).Select(x => new DataItemVerticalAverage(x.Key, RangedEventList.Select(x => x.VerticalSpeed)));
+        Slide1Average = RangedEventList.Where(x => x.SlideId == 1).GroupBy(x => x.StartTime.Date).Select(x => new DataItemAverage(x.Key, x.Select(x => x.AverageSpeed).First()));
+        Slide2Average = RangedEventList.Where(x => x.SlideId == 2).GroupBy(x => x.StartTime.Date).Select(x => new DataItemAverage(x.Key, x.Select(x => x.AverageSpeed).First()));
+        Slide3Average = RangedEventList.Where(x => x.SlideId == 3).GroupBy(x => x.StartTime.Date).Select(x => new DataItemAverage(x.Key, x.Select(x => x.AverageSpeed).First()));
+        Slide1VerticalAverage = RangedEventList.Where(x => x.SlideId == 1).GroupBy(x => x.StartTime.Date).Select(x => new DataItemVerticalAverage(x.Key, x.Select(x => x.VerticalSpeed).First()));
+        Slide2VerticalAverage = RangedEventList.Where(x => x.SlideId == 2).GroupBy(x => x.StartTime.Date).Select(x => new DataItemVerticalAverage(x.Key, x.Select(x => x.VerticalSpeed).First()));
+        Slide3VerticalAverage = RangedEventList.Where(x => x.SlideId == 3).GroupBy(x => x.StartTime.Date).Select(x => new DataItemVerticalAverage(x.Key, x.Select(x => x.VerticalSpeed).First()));
+
 
     }
 
@@ -185,16 +189,16 @@
 
     public class DataItemAverage
     {
-        public DataItemAverage(DateTime date, double average) { Date = date; Average = average; }
+        public DataItemAverage(DateTime date, double? average) { Date = date; Average = average; }
         public DateTime Date { get; set; }
-        public double Average { get; set; }
+        public double? Average { get; set; }
     }
 
     public class DataItemVerticalAverage
     {
-        public DataItemVerticalAverage(DateTime date, IEnumerable<double?> average) { Date = date; Average = average; }
+        public DataItemVerticalAverage(DateTime date, double? average) { Date = date; Average = average; }
         public DateTime Date { get; set; }
-        public IEnumerable<double?> Average { get; set; }
+        public double? Average { get; set; }
     }
 
     public enum DateRange

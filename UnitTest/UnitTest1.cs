@@ -46,6 +46,7 @@ namespace UnitTest1
                 Location = primaryLocation,
                 HeightInFeet = 30.4,
                 LengthInFeet = 20.7,
+                Name = "Blue"
             };
             context.Slides.Add(slideBlue);
 
@@ -57,6 +58,7 @@ namespace UnitTest1
                 Location = primaryLocation,
                 HeightInFeet = 20.6,
                 LengthInFeet = 20.4,
+                Name = "Green"
             };
             context.Slides.Add(slideGreen);
 
@@ -68,8 +70,54 @@ namespace UnitTest1
                 Location = primaryLocation,
                 HeightInFeet = 16.7,
                 LengthInFeet = 28.4,
+                Name = "Orange"
             };
             context.Slides.Add(slideOrange);
+
+            //var sensor1 = new Sensor
+            //{
+            //    ExternalDeviceId = "Blue-Top",
+            //    SlideId = slideBlue.SlideId,
+            //    EventType = EventType.SlideStart
+            //};
+            //var sensor2 = new Sensor
+            //{
+            //    ExternalDeviceId = "Blue-Bottom",
+            //    SlideId = slideBlue.SlideId,
+            //    EventType = EventType.SlideEnd
+            //};
+            //var sensor3 = new Sensor
+            //{
+            //    ExternalDeviceId = "Green-Top",
+            //    SlideId = slideGreen.SlideId,
+            //    EventType = EventType.SlideStart
+            //};
+            //var sensor4 = new Sensor
+            //{
+            //    ExternalDeviceId = "Green-Bottom",
+            //    SlideId = slideGreen.SlideId,
+            //    EventType = EventType.SlideEnd
+            //};
+            //var sensor5 = new Sensor
+            //{
+            //    ExternalDeviceId = "Orange-Top",
+            //    SlideId = slideOrange.SlideId,
+            //    EventType = EventType.SlideStart
+            //};
+            //var sensor6 = new Sensor
+            //{
+            //    ExternalDeviceId = "Orange-Bottom",
+            //    SlideId = slideOrange.SlideId,
+            //    EventType = EventType.SlideEnd
+            //};
+
+            //context.Sensors.Add(sensor1);
+            //context.Sensors.Add(sensor2);
+            //context.Sensors.Add(sensor3);
+            //context.Sensors.Add(sensor4);
+            //context.Sensors.Add(sensor5);
+            //context.Sensors.Add(sensor6);
+
 
             var matthew = new User
             {
@@ -104,25 +152,25 @@ namespace UnitTest1
 
 
 
-            //AddEventData(matthew, slideOrange);
-            //AddEventData(matthew, slideBlue);
-            //AddEventData(matthew, slideGreen);
+            AddEventData(matthew, slideOrange);
+            AddEventData(matthew, slideBlue);
+            AddEventData(matthew, slideGreen);
 
-            //AddEventData(john, slideOrange);
-            //AddEventData(john, slideBlue);
-            //AddEventData(john, slideGreen);
+            AddEventData(john, slideOrange);
+            AddEventData(john, slideBlue);
+            AddEventData(john, slideGreen);
 
-            //AddEventData(Kenny, slideOrange);
-            //AddEventData(Kenny, slideBlue);
-            //AddEventData(Kenny, slideGreen);
+            AddEventData(Kenny, slideOrange);
+            AddEventData(Kenny, slideBlue);
+            AddEventData(Kenny, slideGreen);
 
-            //AddEventData(Susan, slideOrange);
-            //AddEventData(Susan, slideBlue);
-            //AddEventData(Susan, slideGreen);
+            AddEventData(Susan, slideOrange);
+            AddEventData(Susan, slideBlue);
+            AddEventData(Susan, slideGreen);
 
-            //AddEventData(Ashley, slideOrange);
-            //AddEventData(Ashley, slideBlue);
-            //AddEventData(Ashley, slideGreen);
+            AddEventData(Ashley, slideOrange);
+            AddEventData(Ashley, slideBlue);
+            AddEventData(Ashley, slideGreen);
 
             //act
 
@@ -147,41 +195,41 @@ namespace UnitTest1
 
         }
 
-        //public void AddEventData(User user, Slide slide)
-        //{
-        //    var context = GetDbContext();
-        //    for (int i = 0; i < 20; i++)
-        //    {
-        //        var userStartTime = DateTime.Now.AddDays(10 * i * -1);
-        //        var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
-        //        var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
-        //        var userStartEvent = new Events
-        //        {
-        //            EventType = EventType.UserStart,
-        //            User = user,
-        //            Slide = slide,
-        //            DateTime = userStartTime
-        //        };
-        //        var slidestartevent = new Events
-        //        {
-        //            EventType = EventType.SlideStart,
-        //            User = user,
-        //            Slide = slide,
-        //            DateTime = slideStartTime
-        //        };
-        //        var slideendevent = new Events
-        //        {
-        //            EventType = EventType.SlideEnd,
-        //            User = user,
-        //            Slide = slide,
-        //            DateTime = slideEndTime
-        //        };
-        //        context.Events.Add(userStartEvent);
-        //        context.Events.Add(slidestartevent);
-        //        context.Events.Add(slideendevent);
+        public void AddEventData(User user, Slide slide)
+        {
+            var context = GetDbContext();
+            for (int i = 0; i < 20; i++)
+            {
+                var userStartTime = DateTime.Now.AddDays(10 * i * -1);
+                var slideStartTime = userStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var slideEndTime = slideStartTime.AddMilliseconds(new System.Random().Next(1, 9999));
+                var userStartEvent = new Events
+                {
+                    EventType = EventType.UserStart,
+                    User = user,
+                    Slide = slide,
+                    DateTime = userStartTime
+                };
+                var slidestartevent = new Events
+                {
+                    EventType = EventType.SlideStart,
+                    User = user,
+                    Slide = slide,
+                    DateTime = slideStartTime
+                };
+                var slideendevent = new Events
+                {
+                    EventType = EventType.SlideEnd,
+                    User = user,
+                    Slide = slide,
+                    DateTime = slideEndTime
+                };
+                context.Events.Add(userStartEvent);
+                context.Events.Add(slidestartevent);
+                context.Events.Add(slideendevent);
 
-        //    }
-        //}
+            }
+        }
         public void WipeDataBase()
         {
 

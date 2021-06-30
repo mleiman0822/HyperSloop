@@ -24,22 +24,8 @@
 @inject IJSRuntime _jsRuntime
 
 
-@*<h3>Test Page</h3>
 
-@if (RecievedMessage == null)
-{
-    <h3>Awaiting message</h3>
-}
-else
-{
-    <h3>@RecievedMessage</h3>
-
-}
-<br />
-<br />*@
-
-
-    <h3 class="text-center"><b>Rider:</b> @Email</h3>
+    <h3 class="text-center">Rider: <b>@Name</b></h3>
     <br />
     <h3 class="text-center">Select Slide:</h3>
     @foreach(var slide in Slides)
@@ -57,11 +43,13 @@ else
 <Modal @ref="modalRef" Closed="@CancelTimer">
     <ModalContent Centered="true">
         <ModalHeader>
-            <ModalTitle>HyperSloop Engaged on slide @SelectedSlide.ToString().Replace("1", "Blue").Replace("2", "Green").Replace("3", "Orange")</ModalTitle>
+            <ModalTitle Class="text-center">HyperSloop Engaged</ModalTitle>
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <h1 class="text-center">@counter.ToString().Replace("6","Ready?").Replace("1","Go!")</h1>
+            <h3 class="text-center">Slide @SelectedSlide.ToString().Replace("1", "Blue").Replace("2", "Green").Replace("3", "Orange")</h3>
+            <br/>
+            <h1 class="text-center">@counter.ToString().Replace("6", "Ready?").Replace("1", "Go!")</h1>
         </ModalBody>
         <ModalFooter>
                 <Button Color="Color.Danger" Clicked="@CancelTimer">Cancel</Button>
@@ -79,6 +67,7 @@ else
     private int counter = 6;
     public string RecievedMessage { get; set; }
     public string Email { get; set; }
+    public string Name { get; set; }
     public int SelectedSlide { get; set; }
     IEnumerable<Slide> Slides;
 
@@ -87,6 +76,8 @@ else
         WaitForSeconds();
         Email = httpContextAccessor.HttpContext.User.Identity.Name.ToString();
         Slides = hyperSloopService.GetSlides();
+        Name = httpContextAccessor.HttpContext.User.Identity.Name.ToString();
+        Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Email.ToLower()).ToString().Replace("@Bngholdingsinc.Com", "").Replace(".", " ");
     }
 
     public async Task WaitForSeconds()

@@ -10,9 +10,12 @@ namespace HyperSloopApp.Models
     {
         [Key]
         public int SensorId { get; set; }
+
         public string ExternalDeviceId { get; set; }
-        public int SlideId { get; set; }
+
         public Slide Slide { get; set; }
+
+        public int SlideId { get; set; }
         public EventType EventType { get; set; }
 
         //Related Items 1 sensor to many SensorEvents 

@@ -1,31 +1,69 @@
 ﻿@inherits LayoutComponentBase
 @using HyperSloopApp.Data;
-@using HyperSloopApp.Shared; 
+@using HyperSloopApp.Shared;
 @inject AppService appservice
 
+
+<RadzenDialog />
+<RadzenNotification />
+<RadzenContextMenu />
+<RadzenTooltip />
 
 <AuthorizeView>
     <Authorized>
         @if (appservice.Instantiate(context.User.Identity.Name))
         {
             <div class="page">
-                <div class="sidebar">
-                    <NavMenu/>
+                <div class="sidebar @(collapseDesktopNav ? "collapseide" : null)">
+                    <NavMenu Collapse="@(collapseDesktopNav ? "navCollapse" : null)" />
                 </div>
-                <div class="main">
-                    <div class="content px-4">
+                @if (collapseDesktopNav == false)
+                {
+                    <div class="navCollapseButton">
+                        <RadzenButton Style="
+                position: fixed;
+                margin-left: -75px;
+                background-color: rgba(2555, 255, 255, 0.1);
+                top: 7px;
+                border-radius: 6px;
+                border-style: solid;
+                color: rgba(255,255,255,.5);
+                border-color: rgba(255,255,255,.1);
+                box-shadow: none;
+                height: 45px;"
+                                      Click="@CollapseMenu">
+                            <RadzenIcon Style="font-size: 2.50em;width: 0px; height: 21px" Icon="menu_open"></RadzenIcon>
+                        </RadzenButton>
+                    </div> }
+                else
+                {
+                    <div class="navOpenButton" style="background-color: rgba(0,0,0,0.4);">
+                        <RadzenButton Style="
+             position: fixed;
+             margin-left: -4px;
+             background-color: rgb(5, 39, 103);
+             top: 7px;
+             border-radius: 6px;
+             border-style: solid;
+             color: rgba(255,255,255,.5);
+             border-color: rgba(255,255,255,.1);
+             box-shadow: none;
+             z-index:9999;
+             height: 45px;"
+                                      Click="@CollapseMenu">
+                            <RadzenIcon Style="font-size: 2.50em;width: 0px;" Icon="menu"></RadzenIcon>
+                        </RadzenButton>
+                    </div>}
+                <div class="main" style="padding-bottom:25px">
+                    <p style="padding-top:12%"></p>
+                    <div class="content p-4 p-md-0">
                         @Body
                     </div>
                 </div>
-            </div>
-        }
-
+            </div> }
         else
         {
-            <h1>Sign in is needed to use HyperSloop.</h1>
-            //add links to sign in to create account.
-        }
-
+            <h1>@(context.User.Identity.Name) is not a valid Account.</h1>}
     </Authorized>
     <NotAuthorized>
     </NotAuthorized>
@@ -34,6 +72,10 @@
 
 
 
-@code{
-
-}
+    @code{
+        private bool collapseDesktopNav = false;
+        void CollapseMenu()
+        {
+            collapseDesktopNav = !collapseDesktopNav;
+        }
+    }

@@ -1,42 +1,45 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">HyperSloopApp</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+﻿
+<div class="@Collapse basecollapsing">
+    <div class="top-row pl-4 navbar navbar-dark">
+        <h2 style="color:white; padding-top:4px">HyperSloop</h2>
+        <button class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="/">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="/charts" Match="NavLinkMatch.All">
-                <span class="oi oi-graph" aria-hidden="true"></span> Charts
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="personalStats">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Personal Metrics
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="leaderBoard">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> LeaderBoards
-            </NavLink>
-        </li>
-    </ul>
-</div>
+    <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+        <ul class="nav flex-column">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="/">
+                    <span class="oi oi-home" aria-hidden="true"></span> Start
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="/charts" Match="NavLinkMatch.All">
+                    <span class="oi oi-graph" aria-hidden="true"></span> Charts
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="personalStats">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Personal Metrics
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="leaderBoard">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> LeaderBoards
+                </NavLink>
+            </li>
+        </ul>
+    </div>
+ </div>
 
-@code {
-    private bool collapseNavMenu = true;
-
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
+    @code {
+        private bool collapseNavMenu = true;
+        private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+        [Parameter]
+        public string Collapse { get; set; }
+        private void ToggleNavMenu()
+        {
+            collapseNavMenu = !collapseNavMenu;
+        }
     }
-}

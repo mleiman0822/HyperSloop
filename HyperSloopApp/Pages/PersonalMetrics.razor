@@ -33,13 +33,13 @@ else
     @foreach (var range in DateRanges)
     {
 
-<div class="float-start">
-    <Button Active="true" Color="@(Range == range ? Color.Primary : Color.Dark)"
-            Clicked="@(args => SetRange(range))">
-        @range.ToString().Replace("_", " ")
-    </Button>
-    <div class="divder"/>
-</div>
+        <div class="float-start">
+            <Button Active="true" Color="@(Range == range ? Color.Primary : Color.Dark)"
+                    Clicked="@(args => SetRange(range))">
+                @range.ToString().Replace("_", " ")
+            </Button>
+            <div class="divder" />
+        </div>
     }
     <br />
 
@@ -74,7 +74,7 @@ else
         </ModalContent>
     </Modal>
     <div class="float-start w-100">
-        <Tabs  Style="margin-top:5%" Justified="true" SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
+        <Tabs Style="margin-top:5%" Justified="true" SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
             <Items>
                 <Tab Name="Events">Events</Tab>
                 <Tab Name="SlideMetrics">Metrics</Tab>
@@ -85,37 +85,40 @@ else
             <Content>
                 <TabPanel Name="Events">
                     <div style="clear:both; margin-right: 5px">
-                        <div style="display:flex; padding-bottom:8px">
+                        <div style="padding-bottom: 8px; padding-top: 8px">
                             @if (ResetFilter == true)
                             {
                                 <Button Class="w-100" Clicked="@OnResetFilter" Color="Color.Warning">
                                     <Icon Name="IconName.Clear"></Icon>
                                     Clear
                                 </Button>
+                                <figcaption class="text-center">Showing results for slide: @FilteredSlideName</figcaption>
+
                             }
                             else
                             {
                                 <RadzenDropDown TValue="Slide" Style="width:100%"
                                                 Placeholder="Filter by slide..."
-                                                Data="@RangedEventListFiltered.Select(x => x.Slide).Distinct()"  
+                                                Data="@RangedEventListFiltered.Select(x => x.Slide).Distinct()"
                                                 TextProperty="Name"
-                                                Change=@(args => OnSlideFilterChange(args)) />
+                                                Change=@(args => OnSlideFilterChange((args as Slide).Name)) />
                             }
 
                         </div>
-                        <RadzenGrid TItem="SlideEvent" Data="@RangedEventList"
-                                        AllowColumnResize="true" AllowFiltering="true"
-                                        FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        PageSize="20" AllowSorting="true" AllowPaging="true">
+                        <RadzenGrid TItem="SlideEvent" Data="@RangedEventListFiltered"
+                                    AllowColumnResize="true" AllowFiltering="true"
+                                    FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                    PageSize="20" AllowSorting="true" AllowPaging="true"
+                                    CellRender="@CellRender">
                             <Columns>
-                                <RadzenGridColumn TItem="SlideEvent" Property="SlideId" Title="Slide" />
-                                <RadzenGridColumn TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date"  />
+                                <RadzenGridColumn TItem="SlideEvent" Property="Slide.Name" Title="Slide" />
+                                <RadzenGridColumn TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date" />
                                 <RadzenGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="StartTime" Title="Start Time" />
-                                <RadzenGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time"  />
-                                <RadzenGridColumn TItem="SlideEvent" FormatString="{0:0.00} Sec." Property="SlideDuration" Title="Duration"  />
-                                <RadzenGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="AverageSpeed" Title="Avg. Speed"  />
+                                <RadzenGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time" />
+                                <RadzenGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="AverageSpeed" Title="Avg. Speed" />
                                 <RadzenGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="VerticalSpeed" Title="Vert. Speed" />
-                                <RadzenGridColumn TItem="SlideEvent" Property="Rank" Title="Rank"/>
+                                <RadzenGridColumn TItem="SlideEvent" FormatString="{0:0.00} Sec." Property="SlideDuration" Title="Duration" />
+                                <RadzenGridColumn TItem="SlideEvent" Property="Rank" Title="Rank" />
                             </Columns>
                         </RadzenGrid>
                     </div>
@@ -125,16 +128,16 @@ else
                     <RadzenCard>
                         <div class="row">
                             <h2 class="text-center">@Range.ToString().Replace("_", " ")</h2>
-                            @if (FilteredSlideId == 0)
+                            @if (FilteredSlideName == null)
                             {
                                 <h3 class="text-center">Metrics for all slides</h3>
 
                             }
-                        else
-                        {
-                            <h3 class="text-center">Metrics for the @FilteredSlideId.ToString().Replace("1", "Blue").Replace("2", "Green").Replace("3", "Orange") slide</h3>
+                            else
+                            {
+                                <h3 class="text-center">Metrics for the @FilteredSlideName slide</h3>
 
-                        }
+                            }
                             @if (ResetFilter == true)
                             {
                                 <Button Clicked="@OnResetFilter" Color="Color.Warning">
@@ -148,39 +151,39 @@ else
                                                 Placeholder="All"
                                                 Data="@RangedEventListFiltered.Select(x => x.Slide).Distinct()"
                                                 TextProperty="Name"
-                                                Change=@(args => OnSlideFilterChange(args)) />
+                                                Change=@(args => OnSlideFilterChange((args as Slide).Name)) />
                             }
                         </div>
                         <br />
                         <div class="row" style="margin-top:10%; margin-bottom:2%">
-                            <div class="col">
-                                <h6>Average Time:</h6>
+                            <div class="col text-center">
+                                <h6>Average:</h6>
                             </div>
-                            <div class="col">
-                                <h6>Best Time:</h6>
+                            <div class="col text-center">
+                                <h6>Best:</h6>
                             </div>
-                            <div class="col">
-                                <h6>Worst Time:</h6>
+                            <div class="col text-center">
+                                <h6>Worst:</h6>
                             </div>
                         </div>
                         <div>
                             <div class="row">
-                                <div class="col">
-                                    <h4>@AverageTime.ToString("#.##") Sec.</h4>
+                                <div class="col text-center" style="margin-top:-9px;">
+                                    <h5>@AverageTime.ToString("#.##") <i>Sec.</i></h5>
                                 </div>
-                                <div class="col">
-                                    <h4>@BestTime.ToString("#.##") Sec.</h4>
+                                <div class="col text-center" style="margin-top:-9px;">
+                                    <h5>@BestTime.ToString("#.##") <i>Sec.</i></h5>
                                 </div>
-                                <div class="col">
-                                    <h4>@WorstTime.ToString("#.##") Sec.</h4>
+                                <div class="col text-center" style="margin-top:-9px;">
+                                    <h5>@WorstTime.ToString("#.##") <i>Sec.</i></h5>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" style="margin-top:10%">
                                 <div class="col text-center">
-                                    <h6>Total Slide Runs:</h6>
+                                    <h6>Total Runs:</h6>
                                 </div>
                                 <div class="col text-center">
-                                    <h6>Where You Rank:</h6>
+                                    <h6>Rank:</h6>
                                 </div>
                             </div>
                             <div class="row">
@@ -194,8 +197,8 @@ else
                                 </div>
                                 <div class="col text-center">
                                     @*<h4>Runs:</h4>
-                    <h4>Speed:</h4>*@
-                                    <h4>Duration: @DurationRank</h4>
+                                        <h4>Speed:</h4>*@
+                                    <h4>@DurationRank.ToString().Replace("0", "N/A")</h4>
                                 </div>
                             </div>
 
@@ -221,33 +224,33 @@ else
     {
         get
         {
-            if (RangedEventList == null || RangedEventList.Count() == 0)
+            if (RangedEventListFiltered == null || RangedEventListFiltered.Count() == 0)
             {
                 return 0;
             }
-            return RangedEventList.Average(x => x.SlideDuration);
+            return RangedEventListFiltered.Average(x => x.SlideDuration);
         }
     }
     public double BestTime
     {
         get
         {
-            if (RangedEventList == null || RangedEventList.Count() == 0)
+            if (RangedEventListFiltered == null || RangedEventListFiltered.Count() == 0)
             {
                 return 0;
             }
-            return RangedEventList.Min(x => x.SlideDuration);
+            return RangedEventListFiltered.Min(x => x.SlideDuration);
         }
     }
     public double WorstTime
     {
         get
         {
-            if (RangedEventList == null || RangedEventList.Count() == 0)
+            if (RangedEventListFiltered == null || RangedEventListFiltered.Count() == 0)
             {
                 return 0;
             }
-            return RangedEventList.Max(x => x.SlideDuration);
+            return RangedEventListFiltered.Max(x => x.SlideDuration);
         }
     }
     public bool ResetFilter = false;
@@ -256,26 +259,27 @@ else
     {
         get
         {
-            if (RangedEventList == null || RangedEventList.Count() == 0)
+            if (RangedEventListFiltered == null || RangedEventListFiltered.Count() == 0)
             {
                 return 0;
             }
-            return RangedEventList.Select(x => x.Rank).Min();
+            return RangedEventListFiltered.Select(x => x.Rank).Min();
         }
         set
         {
         }
     }
     public int FilteredSlideId { get; set; }
+    public string FilteredSlideName { get; set; }
     public double TotalSlideTaken
     {
         get
         {
-            if (RangedEventList == null || RangedEventList.Count() == 0)
+            if (RangedEventListFiltered == null || RangedEventListFiltered.Count() == 0)
             {
                 return 0;
             }
-            return RangedEventList.Select(x => x.SlideId).Count();
+            return RangedEventListFiltered.Select(x => x.SlideId).Count();
         }
     }
     private Modal modalRef;
@@ -331,44 +335,39 @@ else
         Email = httpContextAccessor.HttpContext.User.Identity.Name.ToString();
         EventsList = hyperSloopService.GetUserSlideEvents().ToList();
         EventsListCurrentUser = await appservice._HyperSloopService.GetSlideEventsDataByUserId(Email);
-        if (FilteredSlideId == 0)
+        RangedEventList = EventsListCurrentUser.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).ToList();
+        var i = 1;
+        var rankedList = EventsList.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).OrderBy(x => x.SlideDuration).ToList();
+        if (FilteredSlideName != null)
         {
-            var i = 1;
-            RangedEventList = EventsListCurrentUser.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).OrderBy(x => x.SlideDuration).ToList();
-            RangedEventList.ToList().ForEach(x => { x.Rank = i; i++; });
-
+            rankedList = rankedList.Where(x => x.Slide.Name == FilteredSlideName).ToList();
         }
-        else
-        {
-            var i = 1;
-            RangedEventList = EventsListCurrentUser.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).OrderBy(x => x.SlideDuration).Where(x => x.SlideId == FilteredSlideId).ToList();
-            RangedEventList.Where(x => x.SlideId == FilteredSlideId).ToList().ForEach(x => { x.Rank = i; i++; });
-            DurationRank = RangedEventList.Where(x => x.SlideId == FilteredSlideId).ToList().Select(x => x.Rank).Min();
-
-        }
-        RangedEventListFiltered = RangedEventList;
+        rankedList.ForEach(x => { x.Rank = i; i++; });
+        OnSlideFilterChange(FilteredSlideName);
         EventsListComparedUser = await appservice._HyperSloopService.GetComparedUserEventsByName(ComparedUser);
         Email = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Email.ToLower()).ToString().Replace("@Bngholdingsinc.Com", "").Replace(".", " ");
 
 
     }
 
-    public int OnSlideFilterChange(object args)
+    void OnSlideFilterChange(string currentSlideName)
     {
-        var currentSlideId = (args as Slide).SlideId;
-        if (args == null)
+        if (currentSlideName == null)
         {
             RangedEventListFiltered = RangedEventList.ToList();
         }
         else
         {
-            RangedEventListFiltered = RangedEventList.Where(x => x.SlideId == currentSlideId);
+            RangedEventListFiltered = RangedEventList.Where(x => x.Slide.Name == currentSlideName);
+            InvokeAsync(StateHasChanged);
 
         }
-        ResetFilter = true;
-        FilteredSlideId = currentSlideId;
-        return FilteredSlideId;
+        ResetFilter = currentSlideName != null;
+        FilteredSlideName = currentSlideName;
+        InvokeAsync(StateHasChanged);
+
     }
+
     void OnCompareStatsChange(object args)
     {
         ComparedUser = args.ToString();
@@ -376,10 +375,10 @@ else
 
     void OnResetFilter()
     {
-        RangedEventList = EventsListCurrentUser.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).ToList();
+        RangedEventListFiltered = RangedEventList.ToList();
         var i = 1;
         ResetFilter = false;
-        FilteredSlideId = 0;
+        FilteredSlideName = null;
         RangedEventList.ToList().ForEach(x => { x.Rank = i; i++; });
         InvokeAsync(StateHasChanged);
     }
@@ -410,6 +409,11 @@ else
         EventsListComparedUser = EventsList.Where(x => x.User.Name == comparedUser).ToList();
     }
 
+    void CellRender(CellRenderEventArgs<SlideEvent> args)
+    {
+        args.Attributes.Add("style", $"width: 50% !important");
+    }
+
     public enum DateRange
     {
         Today,
@@ -418,4 +422,4 @@ else
         Year,
         All,
     }
-}
+    }

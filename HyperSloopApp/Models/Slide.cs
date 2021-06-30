@@ -14,11 +14,12 @@ namespace HyperSloopApp.Models
         public int LocationId { get; set; }
         public Location Location { get; set; }
         public string HexColor { get; set; }
-        public string Name { get; set; }
         public double LengthInFeet { get; set; }
         public double HeightInFeet { get; set; }
         public int StartingFloor { get; set; }
         public int EndingFloor { get; set; }
+        public string Name { get; set; }
+
 
         //public int SlideId { get; set; }
         //public string HexColor { get; set; }

@@ -18,8 +18,6 @@ else
 {
 
     <h3 class="text-center">Global Leaderboard</h3>
-    <br />
-
     @foreach (var range in DateRanges)
     {
 <div class="float-start">
@@ -281,16 +279,15 @@ else
         ResetFilter = currentSlideName != null;
         FilteredSlideName = currentSlideName;
         InvokeAsync(StateHasChanged);
-
     }
 
     void OnResetFilter()
     {
         RangedEventListFiltered = RangedEventList.ToList();
-        var i = 1;
+       // var i = 1;
         ResetFilter = false;
         FilteredSlideName = null;
-        RangedEventList.ToList().ForEach(x => { x.Rank = i; i++; });
+       // RangedEventList.ToList().ForEach(x => { x.Rank = i; i++; });
         InvokeAsync(StateHasChanged);
     }
 

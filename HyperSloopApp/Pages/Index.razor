@@ -14,7 +14,6 @@
         <Tab Name="TotalSlideCount"><RadzenIcon Icon="directions_run" /></Tab>
         <Tab Name="AverageSpeed"><RadzenIcon Icon="speed" /></Tab>
         <Tab Name="AverageVerticalSpeed"><RadzenIcon Icon="swap_vert" /></Tab>
-        <Tab Name="settings">Settings</Tab>
     </Items>
     <Content>
         <TabPanel Name="TotalSlideCount">
@@ -63,12 +62,12 @@
                 <div class="col-md-6 col-sm-12 p-4">
                     <h3 class="text-center">Average Vertical Speed (Seconds)</h3>
                     <RadzenChart>
-                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide1VerticalAverage" CategoryProperty="Date" Title="Slide 1" ValueProperty="Average">
+                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide1VerticalAverage" CategoryProperty="Date" Title="Blue" ValueProperty="Average">
                         </RadzenAreaSeries>
-                        @*<RadzenAreaSeries Smooth="@smooth" Data="@Slide2VerticalAverage" CategoryProperty="Date" Title="Slide 2" LineType="LineType.Dashed" ValueProperty="Average">
+                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide2VerticalAverage" CategoryProperty="Date" Title="Green" LineType="LineType.Dashed" ValueProperty="Average">
                         </RadzenAreaSeries>
-                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide3VerticalAverage" CategoryProperty="Date" Title="Slide 3" LineType="LineType.Dotted" ValueProperty="Average">
-                        </RadzenAreaSeries>*@
+                        <RadzenAreaSeries Smooth="@smooth" Data="@Slide3VerticalAverage" CategoryProperty="Date" Title="Orange" LineType="LineType.Dotted" ValueProperty="Average">
+                        </RadzenAreaSeries>
                         <RadzenCategoryAxis Padding="20" />
                         <RadzenValueAxis FormatString="{0:0.00}">
                             <RadzenGridLines Visible="true" />
@@ -78,9 +77,6 @@
                     </RadzenChart>
                 </div>
             </div>
-        </TabPanel>
-        <TabPanel Name="settings">
-            Content for settings.
         </TabPanel>
     </Content>
 </Tabs>
@@ -166,11 +162,6 @@
         Slide2VerticalAverage = RangedEventList.Where(x => x.SlideId == 2).GroupBy(x => x.StartTime.Date).Select(x => new DataItemVerticalAverage(x.Key, x.Select(x => x.VerticalSpeed).First()));
         Slide3VerticalAverage = RangedEventList.Where(x => x.SlideId == 3).GroupBy(x => x.StartTime.Date).Select(x => new DataItemVerticalAverage(x.Key, x.Select(x => x.VerticalSpeed).First()));
 
-
-    }
-
-    void OnChange(dynamic value)
-    {
 
     }
 

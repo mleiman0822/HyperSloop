@@ -337,12 +337,14 @@ else
         EventsListCurrentUser = await appservice._HyperSloopService.GetSlideEventsDataByUserId(Email);
         RangedEventList = EventsListCurrentUser.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).ToList();
         var i = 1;
-        var rankedList = EventsList.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).OrderBy(x => x.SlideDuration).ToList();
+        var rankedList = RangedEventList.Where(x => x.StartTime >= StartRange && x.EndTime < EndRange).OrderBy(x => x.SlideDuration).ToList();
+        rankedList.ForEach(x => { x.Rank = i; i++; });
         if (FilteredSlideName != null)
         {
             rankedList = rankedList.Where(x => x.Slide.Name == FilteredSlideName).ToList();
         }
         rankedList.ForEach(x => { x.Rank = i; i++; });
+
         OnSlideFilterChange(FilteredSlideName);
         EventsListComparedUser = await appservice._HyperSloopService.GetComparedUserEventsByName(ComparedUser);
         Email = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Email.ToLower()).ToString().Replace("@Bngholdingsinc.Com", "").Replace(".", " ");
@@ -379,7 +381,7 @@ else
         var i = 1;
         ResetFilter = false;
         FilteredSlideName = null;
-        RangedEventList.ToList().ForEach(x => { x.Rank = i; i++; });
+        //RangedEventListFiltered.ToList().ForEach(x => { x.Rank = i; i++; });
         InvokeAsync(StateHasChanged);
     }
 

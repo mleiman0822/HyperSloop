@@ -465,9 +465,7 @@ rz-datatable-even, rz-datatable-odd {
     flex: 0px;
 }
 
-
-@media (max-width: 768px) {
-    .rz-datatable-reflow .rz-datatable-odd > td, .rz-datatable-reflow .rz-datatable-even > td {
-        width:50% !important
-    }
+.rz-datatable-scrollable-wrapper {
+    height: 366px;
+    overflow: scroll;   
 }

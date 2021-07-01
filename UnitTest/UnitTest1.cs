@@ -44,8 +44,8 @@ namespace UnitTest1
                 StartingFloor = 3,
                 EndingFloor = 1,
                 Location = primaryLocation,
-                HeightInFeet = 30.4,
-                LengthInFeet = 20.7,
+                HeightInFeet = 31.6,
+                LengthInFeet = 65.9,
                 Name = "Blue"
             };
             context.Slides.Add(slideBlue);
@@ -56,8 +56,8 @@ namespace UnitTest1
                 StartingFloor = 3,
                 EndingFloor = 2,
                 Location = primaryLocation,
-                HeightInFeet = 20.6,
-                LengthInFeet = 20.4,
+                HeightInFeet = 12.8,
+                LengthInFeet = 33.9,
                 Name = "Green"
             };
             context.Slides.Add(slideGreen);
@@ -68,8 +68,8 @@ namespace UnitTest1
                 StartingFloor = 2,
                 EndingFloor = 1,
                 Location = primaryLocation,
-                HeightInFeet = 16.7,
-                LengthInFeet = 28.4,
+                HeightInFeet = 18.8,
+                LengthInFeet = 44.6,
                 Name = "Orange"
             };
             context.Slides.Add(slideOrange);

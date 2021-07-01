@@ -18,102 +18,148 @@
 @inject NavigationManager navigationManager
 
 
-<h3 class="text-center">Compare stats with <b>@comparedUser</b></h3>
+
 @if (isLoaded == false)
 {
-    <h4 class="text-center">Select Date:</h4>
+    <h3 class="text-center">Comparing stats with <b>@comparedUser</b></h3>
+    <br />
+    <h4 class="text-center" style="padding-bottom:10px">Select Date:</h4>
     <RadzenDatePicker Style="width:100%" @bind-Value=@Value DateFormat="d" Change=@(args => OnChange(args, "DatePicker", "MM/dd/yyyy")) />
-}
-else
-{
-    <h4>Selected Date: @Value</h4>
+    <br />
     <br />
     <h4 class="text-center">Select Slide:</h4>
-    <RadzenDropDown TValue="int" Style="width:100%"
+    <RadzenDropDown TValue="Slide" Style="width:100%"
                     Placeholder="Filter by slide..."
-                    Data="@EventsListComparedUser.Select(x => x.SlideId).Distinct()"
-                    Change=@(args => OnSlideSelection(args)) />
-    if (SelectedSlideId != null)
-    {
-        <Button Clicked="CompareStats" Color="Color.Danger">Compare</Button>
-    }
-}
+                    Data="@EventsListComparedUser.Select(x => x.Slide).Distinct()"
+                    TextProperty="Name"
+                    Change=@(args => OnSlideFilterChange((args as Slide).Name)) />
+    <br />
 
-<h4 class="text-center">Change Date:</h4>
-<RadzenDatePicker @bind-Value=@Value DateFormat="d" Change=@(args => OnChange(args, "DatePicker", "MM/dd/yyyy")) />
-<RadzenDataGrid TItem="SlideEvent" Data="@SortedDataBtDateAndSlideCompareduser"
-                AllowColumnResize="true" AllowFiltering="true"
-                FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                PageSize="5" AllowSorting="true" AllowPaging="true"
-                Style="width:100%">
-    <Columns>
-        <RadzenDataGridColumn TItem="SlideEvent" Property="SlideId" Title="Slide" Width="75px" />
-        <RadzenDataGridColumn SortOrder="SortOrder.Descending" TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date" Width="75px" />
-        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="StartTime" Title="Start Time" Width="100px" />
-        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time" Width="100px" />
-        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} Sec." Property="SlideDuration" Title="Duration" Width="100px" />
-        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="AverageSpeed" Title="Avg. Speed" Width="85px" />
-        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="VerticalSpeed" Title="Vert. Speed" Width="85px" />
-    </Columns>
-</RadzenDataGrid>
-<RadzenDatePicker @bind-Value=@Value DateFormat="d" Change=@(args => OnChange(args, "DatePicker", "MM/dd/yyyy")) />
-<RadzenDataGrid TItem="SlideEvent" Data="@SortedDataBtDateAndSlideCurrentUser"
-                AllowColumnResize="true" AllowFiltering="true"
-                FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                PageSize="5" AllowSorting="true" AllowPaging="true"
-                Style="width:100%">
-    <Columns>
-        <RadzenDataGridColumn TItem="SlideEvent" Property="SlideId" Title="Slide" Width="75px" />
-        <RadzenDataGridColumn SortOrder="SortOrder.Descending" TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date" Width="75px" />
-        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="StartTime" Title="Start Time" Width="100px" />
-        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time" Width="100px" />
-        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} Sec." Property="SlideDuration" Title="Duration" Width="100px" />
-        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="AverageSpeed" Title="Avg. Speed" Width="85px" />
-        <RadzenDataGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="VerticalSpeed" Title="Vert. Speed" Width="85px" />
-    </Columns>
-</RadzenDataGrid>
+    <div class="text-center" style="min-height:50%">
+        @if (FilteredSlideName != null)
+        {
+            <br />
+            <Button Clicked="CompareStats" Color="Color.Dark">Compare</Button>
+            <Button Clicked="@(() => navigationManager.NavigateTo($"/comparedStats/{comparedUser}", true))" Color="Color.Warning">Clear Slide</Button>
+        }
+    </div>
+    <br/>
+        <div class="text-center">
+            <Button Clicked="@(() => navigationManager.NavigateTo("/personalStats", true))" Color="Color.Danger">Cancel</Button>
+        </div>
+        }
+
+        @if (LoadComparedStats == true)
+        {
+            <div class="d-flex" style="margin:0px 0px, 3px;">
+                <h5 class="text-center">Date: <b>@Value.ToString().Replace("12:00:00 AM", "")</b></h5>
+                <p style="margin:28px 50px">
+                </p>
+                <h5 class="text-center">Slide: <b>@FilteredSlideName</b></h5>
+            </div>
+            <div class="col-md d-flex" style="flex-flow:column-reverse">
+                <h4 class="text-center" style="padding-top:6px"><b>@comparedUser's</b> stats</h4>
+                <Button Clicked="@(() => navigationManager.NavigateTo($"/comparedStats/{comparedUser}", true))" Color="Color.Dark">Reset</Button>
+
+            </div>
+            <RadzenGrid TItem="SlideEvent" Data="@SortedDataByDateAndSlideCompareduser"
+                        AllowColumnResize="true" AllowFiltering="true"
+                        FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        PageSize="10" AllowSorting="true" AllowPaging="true" CellRender="CellRender"
+                        Style="width:100%;">
+                <Columns>
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date" />
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="StartTime" Title="Start Time" />
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time" />
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:0.00} Sec." Property="SlideDuration" Title="Duration" />
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="AverageSpeed" Title="Avg. Speed" />
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="VerticalSpeed" Title="Vert. Speed" />
+                </Columns>
+            </RadzenGrid>
+            <br />
+            <h4 class="text-center">Your Stats:</h4>
+            <RadzenGrid TItem="SlideEvent" Data="@SortedDataByDateAndSlideCurrentUser"
+                        AllowColumnResize="true" AllowFiltering="true"
+                        FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        PageSize="10" AllowSorting="true" AllowPaging="true" CellRender="CellRender"
+                        Style="width:100%">
+                <Columns>
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:d}" Property="StartTime.Date" Title="Date" />
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="StartTime" Title="Start Time" />
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:T}" Property="EndTime" Title="End Time" />
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:0.00} Sec." Property="SlideDuration" Title="Duration" />
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="AverageSpeed" Title="Avg. Speed" />
+                    <RadzenGridColumn TItem="SlideEvent" FormatString="{0:0.00} MPH" Property="VerticalSpeed" Title="Vert. Speed" />
+                </Columns>
+            </RadzenGrid>
+        }
 
 
-
-@code {
-    [Parameter] public string comparedUser { get; set; }
+        @code {
+            [Parameter] public string comparedUser { get; set; }
     public string Email { get; set; }
-    private Modal modalRef;
-    public bool isLoaded;
-    public int SelectedSlideId;
-    DateTime? Value = DateTime.Now;
-    IEnumerable<SlideEvent> EventsList;
-    IEnumerable<SlideEvent> RangedEventList;
-    IEnumerable<SlideEvent> SortedDataBtDateAndSlideCurrentUser;
-    IEnumerable<SlideEvent> SortedDataBtDateAndSlideCompareduser;
-    IEnumerable<SlideEvent> EventsListCurrentUser;
-    IEnumerable<SlideEvent> EventsListComparedUser;
+        private Modal modalRef;
+        public bool isLoaded;
+        public bool LoadComparedStats = false;
+        public bool ResetFilter;
+        public string FilteredSlideName;
+        public int SelectedSlideId;
+        DateTime? Value = DateTime.Now.Date;
+        IEnumerable<SlideEvent> EventsList;
+        IEnumerable<SlideEvent> SortedDataByDateAndSlideCurrentUser;
+        IEnumerable<SlideEvent> SortedDataByDateAndSlideCompareduser;
+        IEnumerable<SlideEvent> EventsListCurrentUser;
+        IEnumerable<SlideEvent> EventsListComparedUser;
 
-    protected override async Task OnInitializedAsync()
-    {
-        isLoaded = false;
-        Email = httpContextAccessor.HttpContext.User.Identity.Name.ToString();
-        EventsList = hyperSloopService.GetUserSlideEvents().ToList();
-        EventsListCurrentUser = await appservice._HyperSloopService.GetSlideEventsDataByUserId(Email);
-        EventsListComparedUser = await appservice._HyperSloopService.GetComparedUserEventsByName(comparedUser);
-        Email = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Email.ToLower()).ToString().Replace("@Bngholdingsinc.Com", "").Replace(".", " ");
-    }
+        protected override async Task OnInitializedAsync()
+        {
+            isLoaded = false;
+            Email = httpContextAccessor.HttpContext.User.Identity.Name.ToString();
+            EventsList = hyperSloopService.GetUserSlideEvents().ToList();
+            EventsListCurrentUser = await appservice._HyperSloopService.GetSlideEventsDataByUserId(Email);
+            EventsListComparedUser = await appservice._HyperSloopService.GetComparedUserEventsByName(comparedUser);
+            Email = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Email.ToLower()).ToString().Replace("@Bngholdingsinc.Com", "").Replace(".", " ");
+        }
 
-    void OnChange(DateTime? value, string name, string format)
-    {
-        isLoaded = true;
-        Value = value;
+        async void OnChange(DateTime? value, string name, string format)
+        {
+            Value = value;
+        }
+        void OnSlideFilterChange(string currentSlideName)
+        {
+            if (currentSlideName == null)
+            {
+                EventsListComparedUser = EventsListComparedUser.ToList();
+            }
+            else
+            {
+                EventsListComparedUser = EventsListComparedUser.Where(x => x.Slide.Name == currentSlideName);
+                InvokeAsync(StateHasChanged);
 
-    }
-    void OnSlideSelection(object slide)
-    {
-        SelectedSlideId = Convert.ToInt32(slide);
-    }
+            }
+            ResetFilter = currentSlideName != null;
+            FilteredSlideName = currentSlideName;
+            InvokeAsync(StateHasChanged);
+        }
+        void ClearSlideFilter()
+        {
+            EventsListComparedUser = EventsListComparedUser.ToList();
+            FilteredSlideName = null;
+            InvokeAsync(StateHasChanged);
+        }
 
-    void CompareStats()
-    {
-        SortedDataBtDateAndSlideCompareduser = EventsListComparedUser.Where(x => x.StartTime.Date == Value && x.SlideId == SelectedSlideId).ToList();
-        SortedDataBtDateAndSlideCurrentUser = EventsListCurrentUser.Where(x => x.StartTime.Date == Value && x.SlideId == SelectedSlideId).ToList();
-    }
-
-}
+        void CompareStats()
+        {
+            if (Value == null) return;
+            SortedDataByDateAndSlideCompareduser = EventsListComparedUser.Where(x => x.StartTime.Date == ((DateTime)Value).Date
+            && x.Slide.Name == FilteredSlideName).ToList();
+            SortedDataByDateAndSlideCurrentUser = EventsListCurrentUser.Where(x => x.StartTime.Date == ((DateTime)Value).Date
+            && x.Slide.Name == FilteredSlideName).ToList();
+            LoadComparedStats = true;
+            isLoaded = true;
+        }
+        void CellRender(CellRenderEventArgs<SlideEvent> args)
+        {
+            args.Attributes.Add("style", $"width: 50% !important");
+        }
+        }

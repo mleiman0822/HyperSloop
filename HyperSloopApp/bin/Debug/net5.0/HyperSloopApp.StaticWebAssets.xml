@@ -1,0 +1,8 @@
+﻿<StaticWebAssets Version="1.0">
+  <ContentRoot BasePath="/" Path="C:\Users\matthew.leiman\Desktop\Repos\HyperSloop\HyperSloopApp\obj\Debug\net5.0\scopedcss\bundle\" />
+  <ContentRoot BasePath="_content/Blazorise" Path="C:\Users\matthew.leiman\.nuget\packages\blazorise\0.9.3.8\build\..\staticwebassets\" />
+  <ContentRoot BasePath="_content/Blazorise.Bootstrap" Path="C:\Users\matthew.leiman\.nuget\packages\blazorise.bootstrap\0.9.3.8\build\..\staticwebassets\" />
+  <ContentRoot BasePath="_content/Blazorise.Charts" Path="C:\Users\matthew.leiman\.nuget\packages\blazorise.charts\0.9.3.8\build\..\staticwebassets\" />
+  <ContentRoot BasePath="_content/Blazorise.Charts.Streaming" Path="C:\Users\matthew.leiman\.nuget\packages\blazorise.charts.streaming\0.9.3.8\build\..\staticwebassets\" />
+  <ContentRoot BasePath="_content/Radzen.Blazor" Path="C:\Users\matthew.leiman\.nuget\packages\radzen.blazor\3.6.1\build\..\staticwebassets\" />
+</StaticWebAssets>

@@ -1,0 +1,159 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\matthew.leiman\\Desktop\\Repos\\HyperSloop\\HyperSloopApp\\HyperSloopApp.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\matthew.leiman\\Desktop\\Repos\\HyperSloop\\HyperSloopApp\\HyperSloopApp.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\matthew.leiman\\Desktop\\Repos\\HyperSloop\\HyperSloopApp\\HyperSloopApp.csproj",
+        "projectName": "HyperSloopApp",
+        "projectPath": "C:\\Users\\matthew.leiman\\Desktop\\Repos\\HyperSloop\\HyperSloopApp\\HyperSloopApp.csproj",
+        "packagesPath": "C:\\Users\\matthew.leiman\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\matthew.leiman\\Desktop\\Repos\\HyperSloop\\HyperSloopApp\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\matthew.leiman\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Blazorise": {
+              "target": "Package",
+              "version": "[0.9.3.8, )"
+            },
+            "Blazorise.Bootstrap": {
+              "target": "Package",
+              "version": "[0.9.3.8, )"
+            },
+            "Blazorise.Charts": {
+              "target": "Package",
+              "version": "[0.9.3.8, )"
+            },
+            "Blazorise.Charts.Streaming": {
+              "target": "Package",
+              "version": "[0.9.3.8, )"
+            },
+            "Blazorise.Components": {
+              "target": "Package",
+              "version": "[0.9.3.8, )"
+            },
+            "Blazorise.Icons.FontAwesome": {
+              "target": "Package",
+              "version": "[0.9.3.8, )"
+            },
+            "BuildWebCompiler": {
+              "target": "Package",
+              "version": "[1.12.394, )"
+            },
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.0.90, )"
+            },
+            "Delegate.SassBuilder": {
+              "target": "Package",
+              "version": "[1.4.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[5.0.4, )",
+              "noWarn": [
+                "NU1605"
+              ]
+            },
+            "Microsoft.AspNetCore.Authentication.OpenIdConnect": {
+              "target": "Package",
+              "version": "[5.0.4, )",
+              "noWarn": [
+                "NU1605"
+              ]
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[5.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.5, )"
+            },
+            "Microsoft.Identity.Web": {
+              "target": "Package",
+              "version": "[1.1.0, )"
+            },
+            "Microsoft.Identity.Web.UI": {
+              "target": "Package",
+              "version": "[1.1.0, )"
+            },
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.0.25, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Radzen.Blazor": {
+              "target": "Package",
+              "version": "[3.6.1, )"
+            },
+            "ServiceStack.Interfaces": {
+              "target": "Package",
+              "version": "[5.11.0, )"
+            },
+            "TimePeriodLibrary.NET": {
+              "target": "Package",
+              "version": "[2.1.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

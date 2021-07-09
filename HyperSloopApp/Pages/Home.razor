@@ -97,6 +97,10 @@
         timer.Elapsed += CountDownTimer;
         timer.Enabled = true;
         modalRef.Show();
+        if(counter.ToString() == "Go!")
+        {
+            navigationManager.NavigateTo("/personalMetrics", true);
+        }
     }
 
     public void CountDownTimer(Object source, System.Timers.ElapsedEventArgs e)

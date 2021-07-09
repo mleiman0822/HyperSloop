@@ -82,23 +82,23 @@ namespace HyperSloopApp.Services
         {
             using (var scope = scopeFactory.CreateScope())
             {
-                //var _applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                //var deserializedMessage = JsonSerializer.Deserialize<SensorData>(message);
-                //var sensor = _applicationDbContext.Sensors.Where(x => x.ExternalDeviceId == deserializedMessage.Id).First();
-                //var rand = new Random();
-                //_applicationDbContext.SensorEvents.Add(new SensorEvent
-                //{
-                //    Sensor = sensor,
-                //    Time = DateTime.Now
-                //});
-                //_applicationDbContext.Events.Add(new Events
-                //{
-                //   DateTime = DateTime.Now,
-                //   EventType = sensor.EventType,
-                //   SlideId = sensor.SlideId,
-                //   Slide = sensor.Slide                  
-                //});
-                //_applicationDbContext.SaveChanges();
+                var _applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var deserializedMessage = JsonSerializer.Deserialize<SensorData>(message);
+                var sensor = _applicationDbContext.Sensors.Where(x => x.ExternalDeviceId == deserializedMessage.Id).First();
+                var rand = new Random();
+                _applicationDbContext.SensorEvents.Add(new SensorEvent
+                {
+                    Sensor = sensor,
+                    Time = DateTime.Now
+                });
+                _applicationDbContext.Events.Add(new Events
+                {
+                    DateTime = DateTime.Now,
+                    EventType = sensor.EventType,
+                    SlideId = sensor.SlideId,
+                    Slide = sensor.Slide
+                });
+                _applicationDbContext.SaveChanges();
             }
         }
        

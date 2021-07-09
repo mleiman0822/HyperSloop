@@ -63,7 +63,6 @@ namespace HyperSloopApp
             services.AddScoped<HyperSloopService>();
             services.AddScoped<AppService>();
             services.AddSingleton<UDPService>();
-            services.AddSingleton<PageHistoryState>();
             var cs = Configuration.GetConnectionString("default");
             services.AddDbContext<ApplicationDbContext>(item => item.UseMySql(
             cs, ServerVersion.AutoDetect(cs)));

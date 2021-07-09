@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fmAQAJBA6dWg3QfHl5epB57otIGifgQ+2jVJm30KMyPtfTRbsFtJxqyhsN3f73D3cqkd4RdCm1gjysx3xTjFoA==",
+  "dgSpecHash": "sonS9PMWxurlZhrGDHeLGhSBUF6HGSNSoH2XrxPuWleo26If6T+blxprYnMWAsLaG2NQ6+SoxS8ymMMsBRQIOQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\matthew.leiman\\Desktop\\Repos\\HyperSloop\\HyperSloopApp\\HyperSloopApp.csproj",
+  "projectFilePath": "C:\\Users\\matthew.leiman\\Desktop\\Misc\\HyperSloop\\HyperSloopApp\\HyperSloopApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\matthew.leiman\\.nuget\\packages\\azure.core\\1.4.1\\azure.core.1.4.1.nupkg.sha512",
     "C:\\Users\\matthew.leiman\\.nuget\\packages\\azure.identity\\1.2.3\\azure.identity.1.2.3.nupkg.sha512",

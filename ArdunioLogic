@@ -1,0 +1,103 @@
+#include <SPI.h>
+#include <WiFiNINA.h>
+#include <WiFiUdp.h>
+#include <avr/dtostrf.h>
+int status = WL_IDLE_STATUS;
+#include "arduino_secrets.h" 
+
+char ssid[] = SECRET_SSID;   
+char pass[] = SECRET_PASS;    
+int keyIndex = 0;            
+unsigned int localPort = 2390;  
+char id[] = "Blue-Top";
+int distanceThreshold = 10;
+float rollingAverage =1000;
+float rollingAverageLarge =1000;
+int trigPin=2;
+int echoPin=3;
+bool didSendLastIteration=false;
+WiFiUDP Udp;
+void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW); 
+  pinMode(2, OUTPUT); // Sets the trigPin as an OUTPUT
+  pinMode(3, INPUT); // Sets the echoPin as an INPUT
+  Serial.begin(9600);
+    
+  while (status != WL_CONNECTED) {
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(ssid);
+    status = WiFi.begin(ssid, pass);
+    delay(1000);
+  }
+  Serial.println("Connected to WiFi");
+  Serial.println("\nStarting connection to server...");
+  digitalWrite(LED_BUILTIN, HIGH); 
+  Udp.begin(localPort);
+}
+void loop() {
+  int d = ReadDistance();
+  char line[256];
+  rollingAverage = (rollingAverage + (float)d)/2.0;
+  rollingAverageLarge = (rollingAverageLarge*9 + (float)d)/2.0;
+  char RAStr[256];
+  char RALStr[256];
+  dtostrf(rollingAverage,7,3,RAStr);
+  dtostrf(rollingAverageLarge,7,3,RALStr);
+  sprintf(line, "%d,%s,%s;",d,RAStr,RALStr);
+  Serial.println(line);
+  
+//  if (d<distanceThreshold && d!=0){
+//      if(!didSendLastIteration){
+//        char message[256];
+//        sprintf(message, "{\"Id\":\"%s\",\"Distance\":\"%d\"}",id,d);
+//        Udp.beginPacket("10.0.61.12", 7321);
+//        Udp.write(message);
+//        Udp.endPacket();
+//        Serial.println("SENT");
+//        didSendLastIteration = true;
+//      
+//      }
+//  }else if(didSendLastIteration){
+//      didSendLastIteration= false;
+//      Serial.println("Throttling");
+//      delay(5000);
+//      Serial.println("Ready");
+//  }
+//  if(WiFi.status() != WL_CONNECTED){
+//        digitalWrite(LED_BUILTIN, LOW); 
+//        while (status != WL_CONNECTED) {
+//        Serial.print("Attempting to connect to SSID: ");
+//        Serial.println(ssid);
+//        status = WiFi.begin(ssid, pass);
+//        delay(1000);
+//    }
+//  }
+}
+
+int ReadDistance(){
+  digitalWrite(2, HIGH);
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  long duration = pulseIn(echoPin, HIGH);
+  int distance = duration * 0.034 / 2;
+  return distance;
+}
+
+void printWifiStatus() {
+  // print the SSID of the network you're attached to:
+  Serial.print("SSID: ");
+  Serial.println(WiFi.SSID());
+  // print your board's IP address:
+  IPAddress ip = WiFi.localIP();
+  Serial.print("IP Address: ");
+  Serial.println(ip);
+  // print the received signal strength:
+  long rssi = WiFi.RSSI();
+  Serial.print("signal strength (RSSI):");
+  Serial.print(rssi);
+  Serial.println(" dBm");
+}

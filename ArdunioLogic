@@ -101,3 +101,7 @@ void printWifiStatus() {
   Serial.print(rssi);
   Serial.println(" dBm");
 }
+
+
+#define SECRET_SSID "wifi name"
+#define SECRET_PASS "wifipass"
